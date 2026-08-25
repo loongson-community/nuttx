@@ -31,6 +31,11 @@
 # enforce this at build time.
 #
 
+# FOC capabilities
+
+config LS_HAVE_COMMON_FOC
+	bool
+
 # I2C capabilities
 
 config LS_HAVE_I2C0
@@ -45,3 +50,52 @@ config LS_HAVE_I2C2
 config LS_HAVE_I2C3
 	bool
 
+# TIM capabilities
+
+config LS_HAVE_TIM_PWM
+	bool
+	default y
+
+config LS_HAVE_TIM_PWM_ADVANCED
+	bool
+	default y if LS_HAVE_IP_TIMERS
+
+config LS_HAVE_TIM_PWM_SINGLECHAN
+	bool
+	default y if LS_HAVE_IP_TIMERS
+
+config LS_HAVE_TIM_PWM_INTERNAL
+	bool
+	default y if LS_HAVE_IP_TIMERS
+
+config LS_HAVE_TIM_PWM_LSPWM
+	bool
+	default y if LS_HAVE_IP_TIMERS
+
+config LS_HAVE_TIM_PWM_CHMODE_LEGACY
+	bool
+	default y if LS_HAVE_IP_TIMERS
+
+config LS_HAVE_PWM_MULTICHAN
+	bool
+	default y if LS_HAVE_IP_TIMERS && LS_PWM
+
+config LS_HAVE_QENCODER_MAIN
+	bool
+	default y if LS_HAVE_IP_TIMERS
+
+config LS_HAVE_IP_TIMERS
+	bool
+
+config LS_HAVE_TIM_ADC_TRIGGER
+	bool
+	default y
+
+config LS_HAVE_TIM1
+	bool
+
+config LS_HAVE_TIM2
+	bool
+
+config LS_HAVE_TIM6
+	bool
