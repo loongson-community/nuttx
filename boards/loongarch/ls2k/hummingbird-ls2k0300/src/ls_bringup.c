@@ -33,6 +33,7 @@
 #include <errno.h>
 
 #include <nuttx/arch.h>
+#include <nuttx/analog/adc.h>
 #include <nuttx/spi/spi.h>
 #include <nuttx/timers/pwm.h>
 
@@ -170,6 +171,26 @@ int ls_bringup(void)
   if (ret < 0)
     {
       serr("ERROR: Failed to mount procfs at %s: %d\n", "/proc", ret);
+    }
+#endif
+
+#ifdef CONFIG_LS_ADC
+  static const uint8_t g_adc1_chanlist[] =
+    {
+      0, 1, 2, 3, 4, 5, 6, 7
+    };
+
+  struct adc_dev_s *adc;
+
+  adc = ls_adcinitialize(1, g_adc1_chanlist,
+                         nitems(g_adc1_chanlist));
+  if (adc != NULL)
+    {
+      ret = adc_register("/dev/adc0", adc);
+      if (ret < 0)
+        {
+          serr("ERROR: adc_register failed: %d\n", ret);
+        }
     }
 #endif
 

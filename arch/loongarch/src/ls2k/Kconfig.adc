@@ -1,0 +1,153 @@
+#
+# STM32 ADC configuration options.
+#
+
+# TODO: The options below are a special case for the legacy family-local
+# stm32l4_adc.c driver (selected by LS_HAVE_ADC_L4).  They must be migrated
+# to the common ADC interface used by stm32_adc_m3m4_v1v2.c (LS_ADCx_EXTSEL /
+# LS_ADCx_JEXTSEL / LS_ADCx_INJECTED_CHAN) and removed from here.
+
+config LS_ADC1_HAVE_TIMER_FREQ
+	bool
+	default y if LS_TIM && LS_ADC1_HAVE_TIMER
+
+config LS_ADC1_HAVE_TIMTRIG
+	bool
+	default y if LS_TIM && LS_ADC1_HAVE_TIMER
+
+config LS_ADC1_HAVE_DMA
+	bool
+
+config LS_ADC1_HAVE_OUTPUT_DFSDM
+	bool
+
+config LS_ADC1_HAVE_TIMER
+	bool
+
+config LS_ADC1_SAMPLE_FREQUENCY
+	int "ADC1 Sampling Frequency"
+	depends on LS_ADC1_HAVE_TIMER_FREQ
+	default 100
+	---help---
+		ADC1 sampling frequency.  Default:  100Hz
+
+config LS_ADC1_TIMTRIG
+	int "ADC1 Timer Trigger"
+	depends on LS_ADC1_HAVE_TIMTRIG
+	default 0
+	range 0 4 if LS_HAVE_ADC_TIMTRIG_TRGO
+	---help---
+		Values 0:CC1 1:CC2 2:CC3 3:CC4 4:TRGO
+
+config LS_ADC_MAX_SAMPLES
+	int "The maximum number of channels that can be sampled"
+	depends on LS_ADC
+	default 1 if !LS_ADC1_DMA
+	default 16
+	---help---
+		The maximum number of samples which can be handled without
+		overrun depends on various factors. This is the user's
+		responsibility to correctly select this value.
+		Since the interface to update the sampling time is available
+		for all supported devices, the user can change the default
+		values in the board initialization logic and avoid ADC overrun.
+
+config LS_ADC_NO_STARTUP_CONV
+	bool "Do not start conversion when opening ADC device"
+	depends on LS_ADC
+	---help---
+		Do not start conversion when opening ADC device.
+
+config LS_ADC_NOIRQ
+	bool "Do not use default ADC interrupts"
+	depends on LS_ADC
+	---help---
+		Do not use default ADC interrupts handlers.
+
+config LS_ADC_LL_OPS
+	bool "ADC low-level operations"
+	depends on LS_ADC
+	---help---
+		Enable low-level ADC ops.
+
+config LS_ADC_CHANGE_SAMPLETIME
+	bool "ADC sample time configuration"
+	depends on LS_ADC_LL_OPS
+	---help---
+		Enable ADC sample time configuration (SMPRx registers).
+
+config LS_ADC_OVERSAMPLE
+	bool "Enable ADC hardware oversampling support"
+	depends on LS_ADC1 && LS_HAVE_ADC_OVERSAMPLE
+	---help---
+		Enable the on-chip ADC oversampling/accumulation block (CFGR2.OVSE).
+		Only STM32G0 and STM32L0 series include this hardware block.
+
+config LS_ADC1_DMA
+	bool "ADC1 DMA"
+	depends on LS_ADC && LS_ADC1 && LS_ADC1_HAVE_DMA
+	---help---
+		If DMA is selected, then the ADC may be configured to support
+		DMA transfer, which is necessary if multiple channels are read
+		or if very high trigger frequencies are used.
+
+config LS_ADC1_SCAN
+	bool "ADC1 scan mode"
+	depends on (LS_ADC && LS_ADC1)
+	default LS_ADC1_DMA
+
+config LS_ADC1_DMA_BATCH
+	int "ADC1 DMA number of conversions"
+	depends on LS_ADC && LS_ADC1 && LS_ADC1_DMA
+	default 1
+	---help---
+		This option allows you to select the number of regular group conversions
+		that will trigger a DMA callback transerring data to the upper-half driver.
+		By default, this value is 1, which means that data is transferred after
+		each group conversion.
+
+config LS_ADC1_ANIOC_TRIGGER
+	int "ADC1 software trigger (ANIOC_TRIGGER) configuration"
+	depends on (LS_ADC && LS_ADC1)
+	default 3
+	range 1 3
+	---help---
+		1 - ANIOC_TRIGGER only starts regular conversion
+		2 - ANIOC_TRIGGER only starts injected conversion
+		3 - ANIOC_TRIGGER starts both regular and injected conversions
+
+config LS_ADC1_INJECTED_CHAN
+	int "ADC1 injected channels"
+	depends on (LS_ADC && LS_ADC1)
+	default 0
+	range 0 4
+	---help---
+		Support for ADC1 injected channels.
+
+config LS_ADC1_EXTSEL
+	bool "ADC1 external trigger for regular group"
+	depends on LS_ADC && LS_ADC1 && !LS_ADC1_HAVE_TIMER
+	---help---
+		Enable EXTSEL for ADC1.
+
+config LS_ADC1_JEXTSEL
+	bool "ADC1 external trigger for injected group"
+	depends on (LS_ADC && LS_ADC1)
+	---help---
+		Enable JEXTSEL for ADC1.
+
+config LS_ADC1_OUTPUT_DFSDM
+	bool "ADC1 output to DFSDM"
+	depends on LS_ADC1_HAVE_OUTPUT_DFSDM && LS_ADC1 && LS_DFSDM1
+	---help---
+		Route ADC1 output directly to DFSDM parallel inputs.
+
+config LS_ADC1_CONTINUOUS
+	bool "Enable ADC1 Continuous Conversion Mode"
+	default n
+	depends on LS_ADC1
+	---help---
+		If enabled, the ADC will operate in continuous conversion mode.
+		Otherwise, it will perform single conversions.
+		Note: Continuous and discontinuous mode cannot be defined at
+		      the same time
