@@ -1,5 +1,5 @@
 /****************************************************************************
- * arch/loongarch/src/ls2k/ls.h
+ * arch/loongarch/src/ls2k/ls_freerun.h
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -20,43 +20,62 @@
  *
  ****************************************************************************/
 
-#ifndef __ARCH_LOONGARCH_SRC_LS2K_LS_H
-#define __ARCH_LOONGARCH_SRC_LS2K_LS_H
+#ifndef __ARCH_LOONGARCH_SRC_LS2K_LS_FREERUN_H
+#define __ARCH_LOONGARCH_SRC_LS2K_LS_FREERUN_H
 
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx/config.h>
-#include <sys/types.h>
+
 #include <stdint.h>
-#include <stdbool.h>
+#include <time.h>
+#include <nuttx/debug.h>
 
-#include "loongarch_internal.h"
+#include "ls_tim.h"
 
-/* Peripherals **************************************************************/
+#ifdef CONFIG_LS_FREERUN
 
-#include "chip.h"
-#include "ls_lowputc.h"
+struct ls_freerun_s
+{
+  uint8_t chan;
+  uint8_t width;
+  struct ls_tim_dev_s *tch;
+  uint32_t frequency;
+#ifndef CONFIG_CLOCK_TIMEKEEPING
+  uint32_t overflow;
+#endif
+#ifdef CONFIG_CLOCK_TIMEKEEPING
+  uint64_t counter_mask;
+#endif
+};
 
-#ifdef CONFIG_LS_GPIO
-#  include "ls_gpio.h"
+#undef EXTERN
+#if defined(__cplusplus)
+#define EXTERN extern "C"
+extern "C"
+{
+#else
+#define EXTERN extern
 #endif
 
-#ifdef CONFIG_LS_I2C
-#  include "ls_i2c.h"
+int ls_freerun_initialize(struct ls_freerun_s *freerun, int chan,
+                          uint16_t resolution);
+#ifndef CONFIG_CLOCK_TIMEKEEPING
+int ls_freerun_counter(struct ls_freerun_s *freerun,
+                       struct timespec *ts);
+#else
+int ls_freerun_counter(struct ls_freerun_s *freerun,
+                       uint64_t *counter);
+#endif
+int ls_freerun_uninitialize(struct ls_freerun_s *freerun);
+
+#undef EXTERN
+#ifdef __cplusplus
+}
 #endif
 
-#ifdef CONFIG_LS_QE
-#  include "ls_qencoder.h"
-#endif
+#endif /* CONFIG_LS_FREERUN */
 
-#ifdef CONFIG_LS_TIM
-#  include "ls_tim.h"
-#endif
-
-#ifdef CONFIG_LS_TIM_PWM
-#  include "ls_tim_pwm.h"
-#endif
-
-#endif /* __ARCH_LOONGARCH_SRC_LS2K_LS_H */
+#endif /* __ARCH_LOONGARCH_SRC_LS2K_LS_FREERUN_H */

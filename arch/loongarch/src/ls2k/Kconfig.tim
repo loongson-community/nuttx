@@ -1,0 +1,684 @@
+#
+# LS timer configuration options.
+#
+
+config LS_CAP
+	bool
+	default n
+
+config LS_PULSECOUNT
+	bool
+	depends on LS_HAVE_IP_TIMERS
+	select ARCH_HAVE_PULSECOUNT
+	select PULSECOUNT
+
+config LS_QE
+	bool
+	default n
+
+config LS_QENCODER_TIMS_1_2
+	bool
+	default y if LS_TIM1 || LS_TIM2
+
+config LS_QENCODER_MAIN
+	bool
+	default y if LS_HAVE_QENCODER_MAIN && SENSORS_QENCODER && LS_QENCODER_TIMS_1_2
+
+config LS_PWM
+	bool
+
+choice
+	prompt "Input channel sampling frequency"
+	depends on LS_QENCODER_FILTER
+	default LS_QENCODER_SAMPLE_FDTS_4
+
+config LS_QENCODER_SAMPLE_FDTS
+	bool "fDTS"
+
+config LS_QENCODER_SAMPLE_CKINT
+	bool "fCK_INT"
+
+config LS_QENCODER_SAMPLE_FDTS_2
+	bool "fDTS/2"
+
+config LS_QENCODER_SAMPLE_FDTS_4
+	bool "fDTS/4"
+
+config LS_QENCODER_SAMPLE_FDTS_8
+	bool "fDTS/8"
+
+config LS_QENCODER_SAMPLE_FDTS_16
+	bool "fDTS/16"
+
+config LS_QENCODER_SAMPLE_FDTS_32
+	bool "fDTS/32"
+
+endchoice
+
+choice
+	prompt "Input channel event count"
+	depends on LS_QENCODER_FILTER
+	default LS_QENCODER_SAMPLE_EVENT_6
+
+config LS_QENCODER_SAMPLE_EVENT_1
+	bool "1"
+	depends on LS_QENCODER_SAMPLE_FDTS
+
+config LS_QENCODER_SAMPLE_EVENT_2
+	bool "2"
+	depends on LS_QENCODER_SAMPLE_CKINT
+
+config LS_QENCODER_SAMPLE_EVENT_4
+	bool "4"
+	depends on LS_QENCODER_SAMPLE_CKINT
+
+config LS_QENCODER_SAMPLE_EVENT_5
+	bool "5"
+	depends on LS_QENCODER_SAMPLE_FDTS_16 || LS_QENCODER_SAMPLE_FDTS_32
+
+config LS_QENCODER_SAMPLE_EVENT_6
+	bool "6"
+	depends on !LS_QENCODER_SAMPLE_FDTS && !LS_QENCODER_SAMPLE_CKINT
+
+config LS_QENCODER_SAMPLE_EVENT_8
+	bool "8"
+	depends on !LS_QENCODER_SAMPLE_FDTS
+
+endchoice
+
+config LS_ONESHOT
+	bool "TIM one-shot wrapper"
+	depends on (LS_HAVE_IP_TIMERS && LS_TIM)
+	---help---
+		Enable a wrapper around the low level timer/counter functions to
+		support one-shot timer.
+
+config LS_FREERUN
+	bool "TIM free-running wrapper"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM
+	---help---
+		Enable a wrapper around the low level timer/counter functions to
+		support a free-running timer.
+
+config LS_ONESHOT_MAXTIMERS
+	int "Maximum number of oneshot timers"
+	depends on LS_ONESHOT
+	depends on LS_HAVE_IP_TIMERS && LS_TIM
+	default 1
+	range 1 8
+	---help---
+		Determines the maximum number of oneshot timers that can be
+		supported.  This setting pre-allocates some minimal support for each
+		of the timers and places an upper limit on the number of oneshot
+		timers that you can use.
+
+config LS_PWM_LL_OPS
+	bool "PWM low-level operations"
+	depends on (LS_HAVE_IP_TIMERS && LS_TIM)
+	---help---
+		Enable low-level PWM ops.
+
+config LS_TIM1_PWM
+	bool "TIM1 PWM"
+	depends on LS_TIM1
+	depends on LS_HAVE_TIM_PWM
+	depends on !LS_HAVE_IP_TIMERS || LS_TIM
+	select LS_PWM if LS_HAVE_TIM_PWM_LSPWM
+	---help---
+		Reserve timer 1 for use by PWM
+
+		Timer devices may be used for different purposes.  One special purpose is
+		to generate modulated outputs for such things as motor control.  If LS_TIM1
+		is defined then THIS following may also be defined to indicate that
+		the timer is intended to be used for pulsed output modulation.
+
+config LS_TIM1_MODE
+	int "TIM1 Mode"
+	depends on LS_TIM1_PWM
+	default 0
+	range 0 4
+	---help---
+		Specifies the timer mode.
+
+config LS_TIM1_LOCK
+	int "TIM1 Lock Level Configuration"
+	depends on LS_TIM1_PWM
+	depends on LS_HAVE_TIM_PWM_ADVANCED
+	default 0
+	range 0 3
+	---help---
+		Timer 1 lock level configuration
+
+config LS_TIM1_TDTS
+	int "TIM1 t_DTS Division"
+	depends on LS_TIM1_PWM
+	depends on LS_HAVE_TIM_PWM_ADVANCED
+	default 0
+	range 0 2
+	---help---
+		Timer 1 dead-time and sampling clock (t_DTS) division
+
+config LS_TIM1_DEADTIME
+	int "TIM1 Initial Dead-time"
+	depends on LS_TIM1_PWM
+	depends on LS_HAVE_TIM_PWM_ADVANCED
+	default 0
+	range 0 255
+	---help---
+		Timer 1 initial dead-time
+
+config LS_TIM1_CHANNEL1
+	bool "TIM1 Channel 1"
+	depends on LS_TIM1_PWM && LS_PWM_MULTICHAN
+	---help---
+		Enables channel 1.
+
+config LS_TIM1_CH1MODE
+	int "TIM1 Channel 1 Mode"
+	depends on LS_TIM1_PWM && LS_PWM_MULTICHAN && LS_TIM1_CHANNEL1
+	default 6
+	range 0 7 if LS_HAVE_TIM_PWM_CHMODE_LEGACY
+	---help---
+		Specifies the channel mode. See enum ls_pwm_chanmode_e in ls_pwm.h.
+
+config LS_TIM1_CH1OUT
+	bool "TIM1 Channel 1 Output"
+	depends on LS_TIM1_PWM
+	depends on (LS_PWM_MULTICHAN && LS_TIM1_CHANNEL1) || (!LS_PWM_MULTICHAN && LS_TIM1_CHANNEL = 1 && LS_HAVE_TIM_PWM_SINGLECHAN)
+	---help---
+		Enables channel 1 output.
+
+config LS_TIM1_CH1NOUT
+	bool "TIM1 Channel 1 Complementary Output"
+	depends on LS_TIM1_PWM
+	depends on (LS_PWM_MULTICHAN && LS_TIM1_CHANNEL1) || (!LS_PWM_MULTICHAN && LS_TIM1_CHANNEL = 1 && LS_HAVE_TIM_PWM_SINGLECHAN)
+	depends on LS_HAVE_TIM_PWM_INTERNAL || LS_TIM1_CH1OUT || !LS_PWM_MULTICHAN
+	---help---
+		Enables channel 1 Complementary Output.
+
+config LS_TIM1_CHANNEL2
+	bool "TIM1 Channel 2"
+	depends on LS_TIM1_PWM && LS_PWM_MULTICHAN
+	---help---
+		Enables channel 2.
+
+config LS_TIM1_CH2MODE
+	int "TIM1 Channel 2 Mode"
+	depends on LS_TIM1_PWM && LS_PWM_MULTICHAN && LS_TIM1_CHANNEL2
+	default 6
+	range 0 7 if LS_HAVE_TIM_PWM_CHMODE_LEGACY
+	---help---
+		Specifies the channel mode. See enum ls_pwm_chanmode_e in ls_pwm.h.
+
+config LS_TIM1_CH2OUT
+	bool "TIM1 Channel 2 Output"
+	depends on LS_TIM1_PWM
+	depends on (LS_PWM_MULTICHAN && LS_TIM1_CHANNEL2) || (!LS_PWM_MULTICHAN && LS_TIM1_CHANNEL = 2 && LS_HAVE_TIM_PWM_SINGLECHAN)
+	---help---
+		Enables channel 2 output.
+
+config LS_TIM1_CH2NOUT
+	bool "TIM1 Channel 2 Complementary Output"
+	depends on LS_TIM1_PWM
+	depends on (LS_PWM_MULTICHAN && LS_TIM1_CHANNEL2) || (!LS_PWM_MULTICHAN && LS_TIM1_CHANNEL = 2 && LS_HAVE_TIM_PWM_SINGLECHAN)
+	depends on LS_HAVE_TIM_PWM_INTERNAL || LS_TIM1_CH2OUT || !LS_PWM_MULTICHAN
+	---help---
+		Enables channel 2 Complementary Output.
+
+config LS_TIM1_CHANNEL3
+	bool "TIM1 Channel 3"
+	depends on LS_TIM1_PWM && LS_PWM_MULTICHAN
+	---help---
+		Enables channel 3.
+
+config LS_TIM1_CH3MODE
+	int "TIM1 Channel 3 Mode"
+	depends on LS_TIM1_PWM && LS_PWM_MULTICHAN && LS_TIM1_CHANNEL3
+	default 6
+	range 0 7 if LS_HAVE_TIM_PWM_CHMODE_LEGACY
+	---help---
+		Specifies the channel mode. See enum ls_pwm_chanmode_e in ls_pwm.h.
+
+config LS_TIM1_CH3OUT
+	bool "TIM1 Channel 3 Output"
+	depends on LS_TIM1_PWM
+	depends on (LS_PWM_MULTICHAN && LS_TIM1_CHANNEL3) || (!LS_PWM_MULTICHAN && LS_TIM1_CHANNEL = 3 && LS_HAVE_TIM_PWM_SINGLECHAN)
+	---help---
+		Enables channel 3 output.
+
+config LS_TIM1_CH3NOUT
+	bool "TIM1 Channel 3 Complementary Output"
+	depends on LS_TIM1_PWM
+	depends on (LS_PWM_MULTICHAN && LS_TIM1_CHANNEL3) || (!LS_PWM_MULTICHAN && LS_TIM1_CHANNEL = 3 && LS_HAVE_TIM_PWM_SINGLECHAN)
+	depends on LS_HAVE_TIM_PWM_INTERNAL || LS_TIM1_CH3OUT || !LS_PWM_MULTICHAN
+	---help---
+		Enables channel 3 Complementary Output.
+
+config LS_TIM1_CHANNEL4
+	bool "TIM1 Channel 4"
+	depends on LS_TIM1_PWM && LS_PWM_MULTICHAN
+	depends on LS_HAVE_IP_TIMERS || LS_HAVE_TIM_PWM_ADVANCED
+	---help---
+		Enables channel 4.
+
+config LS_TIM1_CH4MODE
+	int "TIM1 Channel 4 Mode"
+	depends on LS_TIM1_PWM && LS_PWM_MULTICHAN
+	depends on LS_TIM1_CHANNEL4 || (LS_COMMON_L5_U5 && LS_TIM1_CHANNEL5)
+	default 6
+	range 0 7 if LS_HAVE_TIM_PWM_CHMODE_LEGACY
+	---help---
+		Specifies the channel mode. See enum ls_pwm_chanmode_e in ls_pwm.h.
+
+config LS_TIM1_CH4OUT
+	bool "TIM1 Channel 4 Output"
+	depends on LS_TIM1_PWM
+	depends on LS_PWM_MULTICHAN || (LS_TIM1_CHANNEL = 4 && LS_HAVE_TIM_PWM_SINGLECHAN)
+	depends on !LS_PWM_MULTICHAN || LS_TIM1_CHANNEL4 || (LS_COMMON_L5_U5 && LS_TIM1_CHANNEL5)
+	---help---
+		Enables channel 4 output.
+
+config LS_TIM1_CHANNEL
+	int "TIM1 PWM Output Channel"
+	depends on (LS_TIM1_PWM && !LS_PWM_MULTICHAN) || (LS_TIM1_CAP && ((LS_HAVE_IP_TIMERS && LS_TIM) || ARCH_CHIP_LSH7))
+	default 1
+	range 1 4
+	---help---
+		If TIM1 is enabled for PWM usage, you also need specifies the timer output
+		channel {1,..,4}
+
+config LS_TIM1_CHMODE
+	int "TIM1 Channel Mode"
+	depends on LS_TIM1_PWM && !LS_PWM_MULTICHAN
+	default 6
+	range 0 7 if LS_HAVE_TIM_PWM_CHMODE_LEGACY
+	---help---
+		Specifies the channel mode. See enum ls_pwm_chanmode_e in ls_pwm.h.
+
+config LS_TIM2_PWM
+	bool "TIM2 PWM"
+	depends on LS_TIM2
+	depends on LS_HAVE_TIM_PWM
+	depends on !LS_HAVE_IP_TIMERS || LS_TIM
+	select LS_PWM if LS_HAVE_TIM_PWM_LSPWM
+	---help---
+		Reserve timer 2 for use by PWM
+
+		Timer devices may be used for different purposes.  One special purpose is
+		to generate modulated outputs for such things as motor control.  If LS_TIM2
+		is defined then THIS following may also be defined to indicate that
+		the timer is intended to be used for pulsed output modulation.
+
+config LS_TIM2_MODE
+	int "TIM2 Mode"
+	depends on LS_TIM2_PWM
+	default 0
+	range 0 4
+	---help---
+		Specifies the timer mode.
+
+config LS_TIM2_CHANNEL1
+	bool "TIM2 Channel 1"
+	depends on LS_TIM2_PWM && LS_PWM_MULTICHAN
+	---help---
+		Enables channel 1.
+
+config LS_TIM2_CH1MODE
+	int "TIM2 Channel 1 Mode"
+	depends on LS_TIM2_PWM && LS_PWM_MULTICHAN && LS_TIM2_CHANNEL1
+	default 6
+	range 0 7 if LS_HAVE_TIM_PWM_CHMODE_LEGACY
+	---help---
+		Specifies the channel mode. See enum ls_pwm_chanmode_e in ls_pwm.h.
+
+config LS_TIM2_CH1OUT
+	bool "TIM2 Channel 1 Output"
+	depends on LS_TIM2_PWM
+	depends on (LS_PWM_MULTICHAN && LS_TIM2_CHANNEL1) || (!LS_PWM_MULTICHAN && LS_TIM2_CHANNEL = 1 && LS_HAVE_TIM_PWM_SINGLECHAN)
+	---help---
+		Enables channel 1 output.
+
+config LS_TIM2_CHANNEL2
+	bool "TIM2 Channel 2"
+	depends on LS_TIM2_PWM && LS_PWM_MULTICHAN
+	---help---
+		Enables channel 2.
+
+config LS_TIM2_CH2MODE
+	int "TIM2 Channel 2 Mode"
+	depends on LS_TIM2_PWM && LS_PWM_MULTICHAN && LS_TIM2_CHANNEL2
+	default 6
+	range 0 7 if LS_HAVE_TIM_PWM_CHMODE_LEGACY
+	---help---
+		Specifies the channel mode. See enum ls_pwm_chanmode_e in ls_pwm.h.
+
+config LS_TIM2_CH2OUT
+	bool "TIM2 Channel 2 Output"
+	depends on LS_TIM2_PWM
+	depends on (LS_PWM_MULTICHAN && LS_TIM2_CHANNEL2) || (!LS_PWM_MULTICHAN && LS_TIM2_CHANNEL = 2 && LS_HAVE_TIM_PWM_SINGLECHAN)
+	---help---
+		Enables channel 2 output.
+
+config LS_TIM2_CHANNEL3
+	bool "TIM2 Channel 3"
+	depends on LS_TIM2_PWM && LS_PWM_MULTICHAN
+	---help---
+		Enables channel 3.
+
+config LS_TIM2_CH3MODE
+	int "TIM2 Channel 3 Mode"
+	depends on LS_TIM2_PWM && LS_PWM_MULTICHAN && LS_TIM2_CHANNEL3
+	default 6
+	range 0 7 if LS_HAVE_TIM_PWM_CHMODE_LEGACY
+	---help---
+		Specifies the channel mode. See enum ls_pwm_chanmode_e in ls_pwm.h.
+
+config LS_TIM2_CH3OUT
+	bool "TIM2 Channel 3 Output"
+	depends on LS_TIM2_PWM
+	depends on (LS_PWM_MULTICHAN && LS_TIM2_CHANNEL3) || (!LS_PWM_MULTICHAN && LS_TIM2_CHANNEL = 3 && LS_HAVE_TIM_PWM_SINGLECHAN)
+	---help---
+		Enables channel 3 output.
+
+config LS_TIM2_CHANNEL4
+	bool "TIM2 Channel 4"
+	depends on LS_TIM2_PWM && LS_PWM_MULTICHAN
+	depends on LS_HAVE_IP_TIMERS || LS_HAVE_TIM_PWM_ADVANCED
+	---help---
+		Enables channel 4.
+
+config LS_TIM2_CH4MODE
+	int "TIM2 Channel 4 Mode"
+	depends on LS_TIM2_PWM && LS_PWM_MULTICHAN
+	depends on LS_TIM2_CHANNEL4 || (LS_COMMON_L5_U5 && LS_TIM2_CHANNEL5)
+	default 6
+	range 0 7 if LS_HAVE_TIM_PWM_CHMODE_LEGACY
+	---help---
+		Specifies the channel mode. See enum ls_pwm_chanmode_e in ls_pwm.h.
+
+config LS_TIM2_CH4OUT
+	bool "TIM2 Channel 4 Output"
+	depends on LS_TIM2_PWM
+	depends on LS_PWM_MULTICHAN || (LS_TIM2_CHANNEL = 4 && LS_HAVE_TIM_PWM_SINGLECHAN)
+	depends on !LS_PWM_MULTICHAN || LS_TIM2_CHANNEL4 || (LS_COMMON_L5_U5 && LS_TIM2_CHANNEL5)
+	---help---
+		Enables channel 4 output.
+
+config LS_TIM2_CHANNEL
+	int "TIM2 PWM Output Channel"
+	depends on (LS_TIM2_PWM && !LS_PWM_MULTICHAN) || (LS_TIM2_CAP && (LS_HAVE_IP_TIMERS && LS_TIM))
+	default 1
+	range 1 4
+	---help---
+		If TIM2 is enabled for PWM usage, you also need specifies the timer output
+		channel {1,..,4}
+
+config LS_TIM2_CHMODE
+	int "TIM2 Channel Mode"
+	depends on LS_TIM2_PWM && !LS_PWM_MULTICHAN
+	default 6
+	range 0 7 if LS_HAVE_TIM_PWM_CHMODE_LEGACY
+	---help---
+		Specifies the channel mode. See enum ls_pwm_chanmode_e in ls_pwm.h.
+
+config LS_PWM_MULTICHAN
+	bool "PWM Multiple Output Channels"
+	depends on LS_HAVE_PWM_MULTICHAN
+	---help---
+		Specifies that the PWM driver supports multiple output
+		channels per timer.
+
+config LS_TIM1_PULSECOUNT
+	bool "TIM1 pulse count"
+	depends on LS_TIM1
+	depends on LS_HAVE_IP_TIMERS
+	select LS_PULSECOUNT
+	---help---
+		Reserve timer 1 for pulse count output.
+
+if LS_TIM1_PULSECOUNT
+
+config LS_TIM1_PULSECOUNT_TDTS
+	int "TIM1 pulse count clock division"
+	default 0
+	range 0 2
+
+config LS_TIM1_PULSECOUNT_CHANNEL
+	int "TIM1 pulse count channel"
+	default 1
+	range 1 4
+	---help---
+		Specifies the timer channel {1,..,4}.
+
+config LS_TIM1_PULSECOUNT_POL
+	int "TIM1 pulse count output polarity"
+	default 0
+	range 0 1
+
+config LS_TIM1_PULSECOUNT_IDLE
+	int "TIM1 pulse count idle state"
+	default 0
+	range 0 1
+
+endif # LS_TIM1_PULSECOUNT
+
+config LS_PWM_TRGO
+	bool "TIM PWM TRGO support"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_PWM
+	---help---
+		Enable TRGO support for PWM driver
+
+config LS_TIM1_CAP
+	bool "TIM1 Capture"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1
+	select LS_CAP
+	---help---
+		Reserve timer 1 for use by Capture
+
+		Timer devices may be used for different purposes.  One special purpose is
+		to capture input.
+
+config LS_TIM1_CLOCK
+	int "TIM1 work frequency for capture"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CAP
+	default 1000000
+	---help---
+		This clock frequency limiting the count rate at the expense of resolution.
+
+config LS_TIM2_CAP
+	bool "TIM2 Capture"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM2
+	select LS_CAP
+	---help---
+		Reserve timer 2 for use by Capture
+
+		Timer devices may be used for different purposes.  One special purpose is
+		to capture input.
+
+config LS_TIM2_CLOCK
+	int "TIM2 work frequency for capture"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM2_CAP
+	default 1000000
+	---help---
+		This clock frequency limiting the count rate at the expense of resolution.
+
+config LS_TIM1_CH1POL
+	int "TIM1 Channel 1 Output polarity"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CH1OUT
+	default 0
+	range 0 1
+	---help---
+		TIM1 Channel 1 output polarity
+
+config LS_TIM1_CH1IDLE
+	int "TIM1 Channel 1 Output IDLE"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CH1OUT
+	default 0
+	range 0 1
+	---help---
+		TIM1 Channel 1 output IDLE
+
+config LS_TIM1_CH1NPOL
+	int "TIM1 Channel 1 Complementary Output polarity"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CH1NOUT
+	default 0
+	range 0 1
+	---help---
+		TIM1 Channel 1 Complementary Output polarity
+
+config LS_TIM1_CH1NIDLE
+	int "TIM1 Channel 1 Complementary Output IDLE"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CH1NOUT
+	default 0
+	range 0 1
+	---help---
+		TIM1 Channel 1 Complementary Output IDLE
+
+config LS_TIM1_CH2POL
+	int "TIM1 Channel 2 Output polarity"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CH2OUT
+	default 0
+	range 0 1
+	---help---
+		TIM1 Channel 2 output polarity
+
+config LS_TIM1_CH2IDLE
+	int "TIM1 Channel 2 Output IDLE"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CH2OUT
+	default 0
+	range 0 1
+	---help---
+		TIM1 Channel 2 output IDLE
+
+config LS_TIM1_CH2NPOL
+	int "TIM1 Channel 2 Complementary Output polarity"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CH2NOUT
+	default 0
+	range 0 1
+	---help---
+		TIM1 Channel 2 Complementary Output polarity
+
+config LS_TIM1_CH2NIDLE
+	int "TIM1 Channel 2 Complementary Output IDLE"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CH2NOUT
+	default 0
+	range 0 1
+	---help---
+		TIM1 Channel 2 Complementary Output IDLE
+
+config LS_TIM1_CH3POL
+	int "TIM1 Channel 3 Output polarity"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CH3OUT
+	default 0
+	range 0 1
+	---help---
+		TIM1 Channel 3 output polarity
+
+config LS_TIM1_CH3IDLE
+	int "TIM1 Channel 3 Output IDLE"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CH3OUT
+	default 0
+	range 0 1
+	---help---
+		TIM1 Channel 3 output IDLE
+
+config LS_TIM1_CH3NPOL
+	int "TIM1 Channel 3 Complementary Output polarity"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CH3NOUT
+	default 0
+	range 0 1
+	---help---
+		TIM1 Channel 3 Complementary Output polarity
+
+config LS_TIM1_CH3NIDLE
+	int "TIM1 Channel 3 Complementary Output IDLE"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CH3NOUT
+	default 0
+	range 0 1
+	---help---
+		TIM1 Channel 3 Complementary Output IDLE
+
+config LS_TIM1_CH4POL
+	int "TIM1 Channel 4 Output polarity"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CH4OUT
+	default 0
+	range 0 1
+	---help---
+		TIM1 Channel 4 output polarity
+
+config LS_TIM1_CH4IDLE
+	int "TIM1 Channel 4 Output IDLE"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM1_CH4OUT
+	default 0
+	range 0 1
+	---help---
+		TIM1 Channel 4 output IDLE
+
+config LS_TIM2_CH1POL
+	int "TIM2 Channel 1 Output polarity"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM2_CH1OUT
+	default 0
+	range 0 1
+	---help---
+		TIM2 Channel 1 output polarity
+
+config LS_TIM2_CH2POL
+	int "TIM2 Channel 2 Output polarity"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM2_CH2OUT
+	default 0
+	range 0 1
+	---help---
+		TIM2 Channel 2 output polarity
+
+config LS_TIM2_CH3POL
+	int "TIM2 Channel 3 Output polarity"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM2_CH3OUT
+	default 0
+	range 0 1
+	---help---
+		TIM2 Channel 3 output polarity
+
+config LS_TIM2_CH4POL
+	int "TIM2 Channel 4 Output polarity"
+	depends on LS_HAVE_IP_TIMERS && LS_TIM && LS_TIM2_CH4OUT
+	default 0
+	range 0 1
+	---help---
+		TIM2 Channel 4 output polarity
+
+config LS_TIM1_QE
+	bool "TIM1 QE"
+	depends on LS_QENCODER_MAIN && LS_TIM1
+	select LS_QE
+	---help---
+		Reserve TIM1 for use by QEncoder.
+
+config LS_TIM1_QEPSC
+	int "TIM1 QE pulse prescaler"
+	depends on LS_QENCODER_MAIN && LS_TIM1_QE
+	default 1
+	---help---
+		This prescaler divides the number of recorded encoder pulses,
+		limiting the count rate at the expense of resolution.
+
+config LS_TIM2_QE
+	bool "TIM2 QE"
+	depends on LS_QENCODER_MAIN && LS_TIM2
+	select LS_QE
+	---help---
+		Reserve TIM2 for use by QEncoder.
+
+config LS_TIM2_QEPSC
+	int "TIM2 QE pulse prescaler"
+	depends on LS_QENCODER_MAIN && LS_TIM2_QE
+	default 1
+	---help---
+		This prescaler divides the number of recorded encoder pulses,
+		limiting the count rate at the expense of resolution.
+
+config LS_QENCODER_FILTER
+	bool "Enable filtering on LS QEncoder input"
+	depends on LS_QENCODER_MAIN
+	default y
+	---help---
+		Enable input filtering on quadrature encoder channels to reduce noise.
