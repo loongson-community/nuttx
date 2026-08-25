@@ -184,9 +184,15 @@ void loongarch_restorefpu(uintreg_t *regs, uintreg_t *fregs);
 
 static inline uintreg_t *loongarch_fpuregs(struct tcb_s *tcb)
 {
-  /* FPU registers are saved after the integer registers */
+#ifdef CONFIG_ARCH_LAZYFPU
+  /* With lazy FPU the registers are simply in tcb */
+
+  return tcb->xcp.fregs;
+#else
+  /* Otherwise they are after the integer registers */
 
   return (uintreg_t *)((uintptr_t)tcb->xcp.regs + INT_XCPT_SIZE);
+#endif
 }
 #else
 #  define loongarch_fpuconfig()
