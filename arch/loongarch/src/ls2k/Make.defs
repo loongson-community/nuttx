@@ -38,6 +38,39 @@ ifeq ($(CONFIG_LS_I2C),y)
 CHIP_CSRCS += ls_i2c.c
 endif
 
+ifeq ($(CONFIG_LS_TIM),y)
+CHIP_CSRCS += ls_tim.c
+endif
+
+ifeq ($(CONFIG_LS_TIM_PWM),y)
+CHIP_CSRCS += ls_tim_pwm.c
+endif
+
+ifeq ($(CONFIG_LS_PULSECOUNT),y)
+CHIP_CSRCS += ls_pulsecount.c
+endif
+
+ifeq ($(CONFIG_LS_CAP),y)
+CHIP_CSRCS += ls_capture.c ls_capture_lowerhalf.c
+endif
+
+ifeq ($(CONFIG_LS_QE),y)
+CHIP_CSRCS += ls_qencoder.c
+endif
+
+ifeq ($(CONFIG_TIMER)$(CONFIG_LS_HAVE_IP_TIMERS),yy)
+CHIP_CSRCS += ls_tim_lowerhalf.c
+endif
+
+ifeq ($(CONFIG_LS_ONESHOT),y)
+CHIP_CSRCS += ls_oneshot.c
+CHIP_CSRCS += ls_oneshot_lowerhalf.c
+endif
+
+ifeq ($(CONFIG_LS_FREERUN),y)
+CHIP_CSRCS += ls_freerun.c
+endif
+
 ifeq ($(CONFIG_LS_PWM),y)
 CHIP_CSRCS += ls_pwm.c
 endif

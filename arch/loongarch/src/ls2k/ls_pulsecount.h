@@ -1,5 +1,5 @@
 /****************************************************************************
- * arch/loongarch/src/ls2k/ls.h
+ * arch/loongarch/src/ls2k/ls_pulsecount.h
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -20,43 +20,20 @@
  *
  ****************************************************************************/
 
-#ifndef __ARCH_LOONGARCH_SRC_LS2K_LS_H
-#define __ARCH_LOONGARCH_SRC_LS2K_LS_H
+#ifndef __ARCH_LOONGARCH_SRC_LS2K_LS_PULSECOUNT_H
+#define __ARCH_LOONGARCH_SRC_LS2K_LS_PULSECOUNT_H
 
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx/config.h>
-#include <sys/types.h>
-#include <stdint.h>
-#include <stdbool.h>
+#include <nuttx/timers/pulsecount.h>
 
-#include "loongarch_internal.h"
+/****************************************************************************
+ * Public Function Prototypes
+ ****************************************************************************/
 
-/* Peripherals **************************************************************/
+struct pulsecount_lowerhalf_s *ls_pulsecountinitialize(int timer);
 
-#include "chip.h"
-#include "ls_lowputc.h"
-
-#ifdef CONFIG_LS_GPIO
-#  include "ls_gpio.h"
-#endif
-
-#ifdef CONFIG_LS_I2C
-#  include "ls_i2c.h"
-#endif
-
-#ifdef CONFIG_LS_QE
-#  include "ls_qencoder.h"
-#endif
-
-#ifdef CONFIG_LS_TIM
-#  include "ls_tim.h"
-#endif
-
-#ifdef CONFIG_LS_TIM_PWM
-#  include "ls_tim_pwm.h"
-#endif
-
-#endif /* __ARCH_LOONGARCH_SRC_LS2K_LS_H */
+#endif /* __ARCH_LOONGARCH_SRC_LS2K_LS_PULSECOUNT_H */

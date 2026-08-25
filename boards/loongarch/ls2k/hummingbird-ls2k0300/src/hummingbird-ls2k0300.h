@@ -104,6 +104,10 @@ extern struct spi_dev_s *ls_spiflash_initialize(int port);
 extern struct spi_dev_s *ls_spiio_initialize(int port);
 #endif
 
+#ifdef CONFIG_LS_TIM
+extern int ls_timer_initialize(const char *devpath, int timer);
+#endif
+
 #ifdef CONFIG_LS_WDT
 extern int ls_wdt_initialize(void);
 #endif

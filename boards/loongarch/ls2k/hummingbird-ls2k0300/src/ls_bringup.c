@@ -34,6 +34,7 @@
 
 #include <nuttx/arch.h>
 #include <nuttx/spi/spi.h>
+#include <nuttx/timers/pwm.h>
 
 #include <ls.h>
 
@@ -88,6 +89,46 @@ static void ls_i2ctool(void)
 }
 #else
 #  define ls_i2ctool()
+#endif
+
+#ifdef CONFIG_LS_TIM1_PWM
+static int ls_tim_pwm_blink_initialize(void)
+{
+  struct pwm_lowerhalf_s *pwm;
+  struct pwm_info_s info =
+  {
+    .frequency = 3,
+    .channels =
+    {
+      {
+        .duty    = 0x8000,
+        .channel = 3,
+      },
+    },
+  };
+
+  int ret;
+
+  pwm = ls_tim_pwminitialize(1);
+  if (pwm == NULL)
+    {
+      return -ENODEV;
+    }
+
+  ret = pwm->ops->setup(pwm);
+  if (ret < 0)
+    {
+      return ret;
+    }
+
+  ret = pwm->ops->start(pwm, &info);
+  if (ret < 0)
+    {
+      pwm->ops->shutdown(pwm);
+    }
+
+  return ret;
+}
 #endif
 
 /****************************************************************************
@@ -169,6 +210,56 @@ int ls_bringup(void)
   if (spiio1 == NULL)
     {
       serr("ERROR: ls_spiio_initialize failed for SPIIO1\n");
+    }
+#endif
+
+#if defined(CONFIG_LS_TIM1) && !defined(CONFIG_LS_TIM1_PWM) && \
+    !defined(CONFIG_LS_TIM1_QE)
+  ret = ls_timer_initialize("/dev/timer1", 1);
+  if (ret < 0)
+    {
+      serr("ERROR: ls_timer_initialize failed for TIM1: %d\n", ret);
+    }
+#endif
+
+#if defined(CONFIG_LS_TIM2) && !defined(CONFIG_LS_TIM2_PWM) && \
+    !defined(CONFIG_LS_TIM2_QE)
+  ret = ls_timer_initialize("/dev/timer2", 2);
+  if (ret < 0)
+    {
+      serr("ERROR: ls_timer_initialize failed for TIM2: %d\n", ret);
+    }
+#endif
+
+#ifdef CONFIG_LS_TIM1_QE
+  ret = ls_qeinitialize("/dev/qe0", 1);
+  if (ret < 0)
+    {
+      serr("ERROR: ls_qeinitialize failed for TIM1: %d\n", ret);
+    }
+#endif
+
+#ifdef CONFIG_LS_TIM2_QE
+  ret = ls_qeinitialize("/dev/qe1", 2);
+  if (ret < 0)
+    {
+      serr("ERROR: ls_qeinitialize failed for TIM2: %d\n", ret);
+    }
+#endif
+
+#ifdef CONFIG_LS_TIM1_PWM
+  ret = ls_tim_pwm_blink_initialize();
+  if (ret < 0)
+    {
+      serr("ERROR: failed to start 3Hz TIM1 CH3 PWM: %d\n", ret);
+    }
+#endif
+
+#ifdef CONFIG_LS_TIM6
+  ret = ls_timer_initialize("/dev/timer6", 6);
+  if (ret < 0)
+    {
+      serr("ERROR: ls_timer_initialize failed for TIM6: %d\n", ret);
     }
 #endif
 

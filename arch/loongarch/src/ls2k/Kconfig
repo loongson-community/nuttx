@@ -43,6 +43,11 @@ config LS_RTC
 	---help---
 		Enable RTC driver support
 
+menu "Timer Configuration"
+	depends on LS_TIM
+source "arch/loongarch/src/ls2k/Kconfig.tim"
+endmenu # Timer Configuration
+
 config LS_PWM
 	bool "PWM"
 	default n

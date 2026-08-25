@@ -7,6 +7,9 @@ menu "LS Peripheral Support"
 config LS_I2C
 	bool
 
+config LS_TIM
+	bool
+
 # I2C peripherals
 
 config LS_I2C0
@@ -57,5 +60,22 @@ config LS_I2C3_SLAVE
 	default n
 	depends on !LS_I2C3 && I2C_SLAVE
 	select LS_I2C_SLAVE
+
+# TIM peripherals
+
+config LS_TIM1
+	bool "TIM1"
+	depends on LS_HAVE_TIM1
+	select LS_TIM
+
+config LS_TIM2
+	bool "TIM2"
+	depends on LS_HAVE_TIM2
+	select LS_TIM
+
+config LS_TIM6
+	bool "TIM6"
+	depends on LS_HAVE_TIM6
+	select LS_TIM
 
 endmenu # LS Peripheral Support
