@@ -4,6 +4,9 @@
 
 menu "LS Peripheral Support"
 
+config LS_ADC
+	bool
+
 config LS_DMA
 	bool
 
@@ -20,6 +23,13 @@ config LS_DMA1
 	depends on LS_HAVE_DMA1
 	select LS_DMA
 	select ARCH_DMA
+
+# ADC peripherals
+
+config LS_ADC1
+	bool "ADC1"
+	select LS_ADC
+	select LS_ADC1_HAVE_DMA
 
 # I2C peripherals
 

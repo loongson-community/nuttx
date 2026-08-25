@@ -28,6 +28,16 @@ source "arch/loongarch/src/ls2k/Kconfig.have"
 
 source "arch/loongarch/src/ls2k/Kconfig.periph"
 
+menu "ADC Configuration"
+	depends on LS_ADC
+source "arch/loongarch/src/ls2k/Kconfig.adc"
+endmenu # ADC Configuration
+
+menu "FOC Configuration"
+	depends on LS_HAVE_COMMON_FOC
+source "arch/loongarch/src/ls2k/Kconfig.foc"
+endmenu # FOC Configuration
+
 menu "I2C Configuration"
 	depends on LS_I2C
 source "arch/loongarch/src/ls2k/Kconfig.i2c"
