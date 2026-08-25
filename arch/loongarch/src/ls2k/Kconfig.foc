@@ -1,0 +1,91 @@
+#
+# LS common FOC options.
+#
+
+config LS_FOC_HAVE_ADC_CHAN0_WORKAROUND
+	bool
+
+config LS_FOC_USE_TIM1
+	bool
+	select LS_TIM1
+	select LS_TIM1_PWM
+	select LS_TIM1_CHANNEL1
+	select LS_TIM1_CHANNEL2
+	select LS_TIM1_CHANNEL3
+	select LS_TIM1_CHANNEL4 if LS_FOC_ADC_CCR4
+	select LS_TIM1_CH1OUT
+	select LS_TIM1_CH2OUT
+	select LS_TIM1_CH3OUT
+	select LS_TIM1_CH4OUT if LS_FOC_ADC_CCR4
+	select LS_TIM1_CH1NOUT if LS_FOC_HAS_PWM_COMPLEMENTARY
+	select LS_TIM1_CH2NOUT if LS_FOC_HAS_PWM_COMPLEMENTARY
+	select LS_TIM1_CH3NOUT if LS_FOC_HAS_PWM_COMPLEMENTARY
+	---help---
+		The TIM1 generates PWM for the FOC
+
+config LS_FOC_USE_ADC1
+	bool
+	select LS_ADC1
+	select LS_ADC1_SCAN if ARCH_CHIP_LSF7 || LS_HAVE_IP_ADC_M3M4_V1
+	select LS_ADC1_JEXTSEL
+
+#
+#
+
+choice
+	prompt "FOC ADC trigger selection"
+	depends on LS_FOC
+	default LS_FOC_ADC_TRGO
+
+config LS_FOC_ADC_CCR4
+	bool "FOC uses CCR4 as ADC trigger"
+	---help---
+		This option uses the software frequency prescaler and is
+		not possible for 4-phase output.
+
+config LS_FOC_ADC_TRGO
+	bool "FOC uses TRGO as ADC trigger"
+	depends on !LS_FOC_FOC1
+	select LS_PWM_TRGO
+	---help---
+		This option allows you to use higher PWM frequency and works for 4-phase output.
+		It is not possible for ADC IPv1 if FOC1 enabled (no T8TRGO in JEXTSEL).
+
+endchoice # "FOC ADC trigger selection"
+
+choice
+	prompt "FOC0 device ADC selection"
+	depends on LS_FOC_FOC0
+	default LS_FOC_FOC0_ADC1
+
+config LS_FOC_FOC0_ADC1
+	bool "FOC0 uses ADC1"
+	depends on LS_HAVE_ADC1
+	select LS_FOC_USE_ADC1
+
+endchoice # "FOC0 device ADC selection"
+
+menuconfig LS_FOC
+	bool "LS lower-half FOC support"
+	depends on LS_HAVE_COMMON_FOC
+	depends on MOTOR_FOC
+	select ARCH_IRQPRIO
+	select LS_ADC
+	select LS_PWM_MULTICHAN
+	select LS_PWM_LL_OPS
+	select LS_ADC_LL_OPS
+	select LS_ADC_CHANGE_SAMPLETIME
+	select LS_ADC_NO_STARTUP_CONV
+
+config LS_FOC_FOC0
+	bool "FOC0 device (TIM1 for PWM modulation)"
+	depends on LS_FOC && LS_HAVE_TIM1
+	select LS_FOC_USE_TIM1
+	---help---
+		Enable support for FOC0 device that uses TIM1 for PWM modulation
+
+config LS_FOC_HAS_PWM_COMPLEMENTARY
+	bool "FOC PWM has complementary outputs"
+	depends on LS_FOC
+	---help---
+		Enable complementary outputs for the FOC PWM (sometimes called 6-PWM mode)

@@ -31,6 +31,15 @@
 # enforce this at build time.
 #
 
+# ADC capabilities
+
+config LS_HAVE_ADC_TIMTRIG_TRGO
+	bool
+	default y
+
+config LS_HAVE_ADC1
+	bool
+
 # DMA capabilities
 
 config LS_HAVE_DMA1

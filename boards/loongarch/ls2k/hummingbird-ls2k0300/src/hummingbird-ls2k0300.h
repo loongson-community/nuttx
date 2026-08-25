@@ -88,6 +88,11 @@ int ls_bringup(void);
 extern void ls_gpioinit(void);
 #endif
 
+#ifdef CONFIG_LS_ADC
+struct adc_dev_s *ls_adcinitialize(int intf, const uint8_t *chanlist,
+                                   int channels);
+#endif
+
 #ifdef CONFIG_LS_I2C
 extern struct i2c_master_s *ls_i2cbus_initialize(int port);
 #endif
