@@ -1,5 +1,5 @@
 /****************************************************************************
- * arch/loongarch/src/ls2k/ls.h
+ * arch/loongarch/src/ls2k/hardware/ls_gpio.h
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -20,27 +20,19 @@
  *
  ****************************************************************************/
 
-#ifndef __ARCH_LOONGARCH_SRC_LS2K_LS_H
-#define __ARCH_LOONGARCH_SRC_LS2K_LS_H
+#ifndef __ARCH_LOONGARCH_SRC_LS2K_HARDWARE_LS_GPIO_H
+#define __ARCH_LOONGARCH_SRC_LS2K_HARDWARE_LS_GPIO_H
 
-/****************************************************************************
- * Included Files
- ****************************************************************************/
+#define LS_GPIO_DIR_OFFSET          0x800
+#define LS_GPIO_OUT_OFFSET          0x900
+#define LS_GPIO_IN_OFFSET           0xa00
+#define LS_GPIO_IRQ_OFFSET          0xb00
+#define LS_GPIO_IRQPOL_OFFSET       0xc00
+#define LS_GPIO_IRQEDG_OFFSET       0xd00
+#define LS_GPIO_IRQCLR_OFFSET       0xe00
+#define LS_GPIO_IRQSTA_OFFSET       0xf00
+#define LS_GPIO_IRQDUL_OFFSET       0xf80
 
-#include <nuttx/config.h>
-#include <sys/types.h>
-#include <stdint.h>
-#include <stdbool.h>
+#define LS_GPIO_NPINS               106
 
-#include "loongarch_internal.h"
-
-/* Peripherals **************************************************************/
-
-#include "chip.h"
-#include "ls_lowputc.h"
-
-#ifdef CONFIG_LS_GPIO
-#  include "ls_gpio.h"
-#endif
-
-#endif /* __ARCH_LOONGARCH_SRC_LS2K_LS_H */
+#endif /* __ARCH_LOONGARCH_SRC_LS2K_HARDWARE_LS_GPIO_H */
