@@ -34,6 +34,10 @@ ifeq ($(CONFIG_LS_RTC),y)
 CHIP_CSRCS += ls_rtc.c
 endif
 
+ifeq ($(CONFIG_LS_I2C),y)
+CHIP_CSRCS += ls_i2c.c
+endif
+
 ifeq ($(CONFIG_LS_WDT),y)
 CHIP_CSRCS += ls_wdt.c
 endif

@@ -31,3 +31,17 @@
 # enforce this at build time.
 #
 
+# I2C capabilities
+
+config LS_HAVE_I2C0
+	bool
+
+config LS_HAVE_I2C1
+	bool
+
+config LS_HAVE_I2C2
+	bool
+
+config LS_HAVE_I2C3
+	bool
+

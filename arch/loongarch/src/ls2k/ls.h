@@ -43,4 +43,8 @@
 #  include "ls_gpio.h"
 #endif
 
+#ifdef CONFIG_LS_I2C
+#  include "ls_i2c.h"
+#endif
+
 #endif /* __ARCH_LOONGARCH_SRC_LS2K_LS_H */

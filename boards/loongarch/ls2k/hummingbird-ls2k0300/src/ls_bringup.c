@@ -46,6 +46,49 @@
  * Public Functions
  ****************************************************************************/
 
+#if defined(CONFIG_I2C) && defined(CONFIG_SYSTEM_I2CTOOL)
+static void ls_i2c_register(int bus)
+{
+  struct i2c_master_s *i2c;
+  int ret;
+
+  i2c = ls_i2cbus_initialize(bus);
+  if (i2c == NULL)
+    {
+      _err("ERROR: Failed to get I2C%d interface\n", bus);
+    }
+  else
+    {
+      ret = i2c_register(i2c, bus);
+      if (ret < 0)
+        {
+          _err("ERROR: Failed to register I2C%d driver: %d\n", bus, ret);
+          ls_i2cbus_uninitialize(i2c);
+        }
+    }
+}
+#endif
+
+#if defined(CONFIG_I2C) && defined(CONFIG_SYSTEM_I2CTOOL)
+static void ls_i2ctool(void)
+{
+#ifdef CONFIG_LS_I2C0
+  ls_i2c_register(0);
+#endif
+#ifdef CONFIG_LS_I2C1
+  ls_i2c_register(1);
+#endif
+#ifdef CONFIG_LS_I2C2
+  ls_i2c_register(2);
+#endif
+#ifdef CONFIG_LS_I2C3
+  ls_i2c_register(3);
+#endif
+}
+#else
+#  define ls_i2ctool()
+#endif
+
 /****************************************************************************
  * Name: ls_bringup
  *
@@ -60,6 +103,10 @@
 int ls_bringup(void)
 {
   int ret = OK;
+
+  /* Register I2C drivers on behalf of the I2C tool */
+
+  ls_i2ctool();
 
 #ifdef CONFIG_LS_GPIO
   ls_gpioinit();
