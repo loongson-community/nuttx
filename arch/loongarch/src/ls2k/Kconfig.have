@@ -1,0 +1,33 @@
+#
+# LS hidden hardware-capability flags (single source of truth).
+#
+
+# All LS_HAVE_* / LS_HAVE_IP_* symbols are defined here.  They are
+# prompt-less bool selectors describing what hardware exists on a chip and
+# which IP-core version a peripheral uses.  Family Kconfig files
+# (arch/arm/src/stm32<fam>/Kconfig) "select" these symbols to describe their
+# silicon; never add a prompt here.  User-visible peripheral selection lives
+# in Kconfig.periph and per-peripheral options in Kconfig.<periph>.
+#
+# Naming: an LS_HAVE_IP_<periph>_V<n> symbol names the IP-core VERSION only;
+# it must NOT encode the CPU core, because a given IP version is the same
+# silicon regardless of whether it sits next to a Cortex-M0 or M3/M4 core (e.g.
+# SPI v2 is SPI v2 on both LSF0 and LSF4).  When a core-specific driver
+# .c file or register header has to be chosen, use the standard NuttX core
+# symbols (CONFIG_ARCH_CORTEXM0 for M0, CONFIG_ARCH_CORTEXM3 / ARCH_CORTEXM4
+# otherwise) -- not an LS_HAVE_IP_* symbol.
+#
+# Two-level selection is intentional and must NOT be "cleaned up" as a
+# duplicate: some peripherals use a "register-set" symbol that picks the
+# hardware header (e.g. LS_HAVE_IP_FLASH_M3M4_V1 -> hardware/stm32_flash.h,
+# LS_HAVE_IP_DMA_V1/_V2 -> hardware/stm32_dma.h) AND a separate
+# "driver-variant" symbol that picks the .c file in Make.defs (e.g.
+# LS_HAVE_IP_FLASH_M3M4_F2F4, LS_HAVE_IP_DMA_V2_STREAM).  A family
+# legitimately selects one of each.
+#
+# Within a single mutually-exclusive group (the #elif dispatch in
+# hardware/stm32_<periph>.h and the else-if chain in Make.defs), a family must
+# select exactly one member; the dispatch headers carry #error guards that
+# enforce this at build time.
+#
+
