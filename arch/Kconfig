@@ -209,6 +209,16 @@ config ARCH_TRICORE
 	---help---
 		Infineon 32-bit AURIX TriCore architectures
 
+config ARCH_LOONGARCH
+	bool "LoongArch"
+	select ARCH_HAVE_INTERRUPTSTACK
+	select ARCH_HAVE_CUSTOMOPT
+	select ARCH_HAVE_SYSCALL
+	select ARCH_HAVE_TCBINFO
+	select ARCH_HAVE_STDARG_H
+	---help---
+		LoongArch architectures.
+
 endchoice
 
 config ARCH
@@ -230,6 +240,7 @@ config ARCH
 	default "or1k"    if ARCH_OR1K
 	default "sparc"   if ARCH_SPARC
 	default "tricore" if ARCH_TRICORE
+	default "loongarch" if ARCH_LOONGARCH
 
 if ARCH_ARM
 source "arch/arm/Kconfig"
@@ -281,6 +292,9 @@ source "arch/sparc/Kconfig"
 endif
 if ARCH_TRICORE
 source "arch/tricore/Kconfig"
+endif
+if ARCH_LOONGARCH
+source "arch/loongarch/Kconfig"
 endif
 
 config ARCH_CHIP_CUSTOM
