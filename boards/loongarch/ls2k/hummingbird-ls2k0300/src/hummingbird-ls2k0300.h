@@ -84,17 +84,25 @@
 
 int ls_bringup(void);
 
-#ifdef CONFIG_LS_GPIO
-extern void ls_gpioinit(void);
-#endif
-
 #ifdef CONFIG_LS_ADC
 struct adc_dev_s *ls_adcinitialize(int intf, const uint8_t *chanlist,
                                    int channels);
 #endif
 
+#ifdef CONFIG_LS_RTC
+extern int ls_rtc_initialize(void);
+#endif
+
 #ifdef CONFIG_LS_I2C
 extern struct i2c_master_s *ls_i2cbus_initialize(int port);
+#endif
+
+#ifdef CONFIG_LS_THERMAL
+extern int ls_thermal_initialize(void);
+#endif
+
+#ifdef CONFIG_LS_TIM
+extern int ls_timer_initialize(const char *devpath, int timer);
 #endif
 
 #ifdef CONFIG_LS_PWM
@@ -109,16 +117,12 @@ extern struct spi_dev_s *ls_spiflash_initialize(int port);
 extern struct spi_dev_s *ls_spiio_initialize(int port);
 #endif
 
-#ifdef CONFIG_LS_THERMAL
-extern int ls_thermal_initialize(void);
-#endif
-
-#ifdef CONFIG_LS_TIM
-extern int ls_timer_initialize(const char *devpath, int timer);
-#endif
-
 #ifdef CONFIG_LS_WDT
 extern int ls_wdt_initialize(void);
+#endif
+
+#ifdef CONFIG_LS_GPIO
+extern void ls_gpioinit(void);
 #endif
 
 #endif /* __ASSEMBLY__ */

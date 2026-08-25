@@ -28,6 +28,87 @@ config LS_PWM
 	bool
 
 choice
+	prompt "Select TIM1 ADC channel"
+	depends on LS_TIM1_ADC
+	default LS_TIM1_ADC1
+
+config LS_TIM1_ADC1
+	bool "TIM1 ADC channel 1"
+	depends on LS_ADC1
+	select LS_ADC1_HAVE_TIMER
+	---help---
+		Reserve TIM1 to trigger ADC1
+
+endchoice
+
+choice
+	prompt "Select TIM2 ADC channel"
+	depends on LS_TIM2_ADC
+	default LS_TIM2_ADC1
+
+config LS_TIM2_ADC1
+	bool "TIM2 ADC channel 1"
+	depends on LS_ADC1
+	select LS_ADC1_HAVE_TIMER
+	---help---
+		Reserve TIM2 to trigger ADC1
+
+endchoice
+
+choice
+	prompt "Select ADC for use with TIM6"
+	depends on LS_TIM6_ADC
+	default LS_TIM6_ADC1
+
+config LS_TIM6_ADC1
+	bool "Use TIM6 for ADC1"
+	depends on LS_ADC1
+	select LS_ADC1_HAVE_TIMER
+	---help---
+		Reserve TIM6 to trigger ADC1
+
+endchoice
+
+config LS_TIM1_ADC
+	bool "TIM1 ADC"
+	depends on LS_HAVE_TIM_ADC_TRIGGER && LS_ADC && LS_TIM1
+	---help---
+		Reserve timer 1 for use by ADC
+
+		Timer devices may be used for different purposes.  If LS_TIM1 is
+		defined then the following may also be defined to indicate that the
+		timer is intended to be used for ADC conversion. Note that ADC usage
+		requires two definition:  Not only do you have to assign the timer
+		for used by the ADC, but then you also have to configure which ADC
+		channel it is assigned to.
+
+config LS_TIM2_ADC
+	bool "TIM2 ADC"
+	depends on LS_HAVE_TIM_ADC_TRIGGER && LS_ADC && LS_TIM2
+	---help---
+		Reserve timer 1 for use by ADC
+
+		Timer devices may be used for different purposes.  If LS_TIM2 is
+		defined then the following may also be defined to indicate that the
+		timer is intended to be used for ADC conversion. Note that ADC usage
+		requires two definition:  Not only do you have to assign the timer
+		for used by the ADC, but then you also have to configure which ADC
+		channel it is assigned to.
+
+config LS_TIM6_ADC
+	bool "TIM6 ADC"
+	depends on LS_HAVE_TIM_ADC_TRIGGER && LS_TIM6 && LS_ADC
+	---help---
+		Reserve timer 6 for use by ADC
+
+		Timer devices may be used for different purposes.  If LS_TIM6 is
+		defined then the following may also be defined to indicate that the
+		timer is intended to be used for ADC conversion. Note that ADC usage
+		requires two definition:  Not only do you have to assign the timer
+		for used by the ADC, but then you also have to configure which ADC
+		channel it is assigned to.
+
+choice
 	prompt "Input channel sampling frequency"
 	depends on LS_QENCODER_FILTER
 	default LS_QENCODER_SAMPLE_FDTS_4
