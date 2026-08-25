@@ -33,6 +33,7 @@
 #include <errno.h>
 
 #include <nuttx/arch.h>
+#include <nuttx/spi/spi.h>
 
 #include <ls.h>
 
@@ -136,6 +137,38 @@ int ls_bringup(void)
   if (ret < 0)
     {
       serr("ERROR: ls_wdt_initialize failed: %d\n", ret);
+    }
+#endif
+
+#ifdef CONFIG_LS_SPI0
+  struct spi_dev_s *spi0 = ls_spiflash_initialize(0);
+  if (spi0 == NULL)
+    {
+      serr("ERROR: ls_spiflash_initialize failed for SPI0\n");
+    }
+#endif
+
+#ifdef CONFIG_LS_SPI1
+  struct spi_dev_s *spi1 = ls_spiflash_initialize(1);
+  if (spi1 == NULL)
+    {
+      serr("ERROR: ls_spiflash_initialize failed for SPI1\n");
+    }
+#endif
+
+#ifdef CONFIG_LS_SPIIO0
+  struct spi_dev_s *spiio0 = ls_spiio_initialize(0);
+  if (spiio0 == NULL)
+    {
+      serr("ERROR: ls_spiio_initialize failed for SPIIO0\n");
+    }
+#endif
+
+#ifdef CONFIG_LS_SPIIO1
+  struct spi_dev_s *spiio1 = ls_spiio_initialize(1);
+  if (spiio1 == NULL)
+    {
+      serr("ERROR: ls_spiio_initialize failed for SPIIO1\n");
     }
 #endif
 

@@ -43,6 +43,52 @@ config LS_RTC
 	---help---
 		Enable RTC driver support
 
+config LS_SPI
+	bool "SPI Flash Controller"
+	default n
+	select SPI
+	---help---
+		Enable SPI flash controller driver support
+
+if LS_SPI
+
+config LS_SPI0
+	bool "SPI0"
+	default n
+	---help---
+		Enable SPI0 controller
+
+config LS_SPI1
+	bool "SPI1"
+	default n
+	---help---
+		Enable SPI1 controller
+
+endif
+
+config LS_SPIIO
+	bool "SPI IO Controller"
+	default n
+	select SPI
+	---help---
+		Enable SPI IO controller driver support
+
+if LS_SPIIO
+
+config LS_SPIIO0
+	bool "SPIIO0"
+	default n
+	---help---
+		Enable SPI IO controller 0
+
+config LS_SPIIO1
+	bool "SPIIO1"
+	default n
+	---help---
+		Enable SPI IO controller 1
+
+endif
+
 config LS_WDT
 	bool "Watchdog"
 	default n
