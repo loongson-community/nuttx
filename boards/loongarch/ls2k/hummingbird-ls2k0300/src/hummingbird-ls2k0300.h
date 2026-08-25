@@ -88,5 +88,9 @@ int ls_bringup(void);
 extern void ls_gpioinit(void);
 #endif
 
+#ifdef CONFIG_LS_PWM
+extern int ls_pwm_initialize(int port);
+#endif
+
 #endif /* __ASSEMBLY__ */
 #endif /* __BOARDS_LOONGARCH_LS2K_HUMMINGBIRD_LS2K0300_SRC_HUMMINGBIRD_LS2K0300_H */
