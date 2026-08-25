@@ -30,7 +30,9 @@ ifeq ($(CONFIG_16550_UART),y)
 CHIP_CSRCS += ls_16550serial.c
 endif
 
-
+ifeq ($(CONFIG_LS_DMA),y)
+CHIP_CSRCS += ls_dma.c
+endif
 
 ifeq ($(CONFIG_LS_GPIO),y)
 CHIP_CSRCS += ls_gpio.c

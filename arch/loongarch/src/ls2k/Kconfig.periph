@@ -4,11 +4,22 @@
 
 menu "LS Peripheral Support"
 
+config LS_DMA
+	bool
+
 config LS_I2C
 	bool
 
 config LS_TIM
 	bool
+
+# DMA peripherals
+
+config LS_DMA1
+	bool "DMA1"
+	depends on LS_HAVE_DMA1
+	select LS_DMA
+	select ARCH_DMA
 
 # I2C peripherals
 
