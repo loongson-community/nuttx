@@ -33,9 +33,6 @@
 #include <errno.h>
 
 #include <nuttx/arch.h>
-#include <nuttx/analog/adc.h>
-#include <nuttx/spi/spi.h>
-#include <nuttx/timers/pwm.h>
 
 #include <ls.h>
 
@@ -44,9 +41,19 @@
 #include "hummingbird-ls2k0300.h"
 
 #include <nuttx/board.h>
+#include <nuttx/analog/adc.h>
+#include <nuttx/timers/pwm.h>
 
 /****************************************************************************
- * Public Functions
+ * Private Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Name: ls_i2c_register
+ *
+ * Description:
+ *   Register one I2C drivers for the I2C tool.
+ *
  ****************************************************************************/
 
 #if defined(CONFIG_I2C) && defined(CONFIG_SYSTEM_I2CTOOL)
@@ -70,26 +77,6 @@ static void ls_i2c_register(int bus)
         }
     }
 }
-#endif
-
-#if defined(CONFIG_I2C) && defined(CONFIG_SYSTEM_I2CTOOL)
-static void ls_i2ctool(void)
-{
-#ifdef CONFIG_LS_I2C0
-  ls_i2c_register(0);
-#endif
-#ifdef CONFIG_LS_I2C1
-  ls_i2c_register(1);
-#endif
-#ifdef CONFIG_LS_I2C2
-  ls_i2c_register(2);
-#endif
-#ifdef CONFIG_LS_I2C3
-  ls_i2c_register(3);
-#endif
-}
-#else
-#  define ls_i2ctool()
 #endif
 
 #ifdef CONFIG_LS_TIM1_PWM
@@ -131,6 +118,38 @@ static int ls_tim_pwm_blink_initialize(void)
   return ret;
 }
 #endif
+
+/****************************************************************************
+ * Name: ls_i2ctool
+ *
+ * Description:
+ *   Register I2C drivers for the I2C tool.
+ *
+ ****************************************************************************/
+
+#if defined(CONFIG_I2C) && defined(CONFIG_SYSTEM_I2CTOOL)
+static void ls_i2ctool(void)
+{
+#ifdef CONFIG_LS_I2C0
+  ls_i2c_register(0);
+#endif
+#ifdef CONFIG_LS_I2C1
+  ls_i2c_register(1);
+#endif
+#ifdef CONFIG_LS_I2C2
+  ls_i2c_register(2);
+#endif
+#ifdef CONFIG_LS_I2C3
+  ls_i2c_register(3);
+#endif
+}
+#else
+#  define ls_i2ctool()
+#endif
+
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
 
 /****************************************************************************
  * Name: ls_bringup
@@ -199,46 +218,6 @@ int ls_bringup(void)
   if (ret < 0)
     {
       serr("ERROR: ls_thermal_initialize failed: %d\n", ret);
-    }
-#endif
-
-#ifdef CONFIG_LS_WDT
-  ret = ls_wdt_initialize();
-  if (ret < 0)
-    {
-      serr("ERROR: ls_wdt_initialize failed: %d\n", ret);
-    }
-#endif
-
-#ifdef CONFIG_LS_SPI0
-  struct spi_dev_s *spi0 = ls_spiflash_initialize(0);
-  if (spi0 == NULL)
-    {
-      serr("ERROR: ls_spiflash_initialize failed for SPI0\n");
-    }
-#endif
-
-#ifdef CONFIG_LS_SPI1
-  struct spi_dev_s *spi1 = ls_spiflash_initialize(1);
-  if (spi1 == NULL)
-    {
-      serr("ERROR: ls_spiflash_initialize failed for SPI1\n");
-    }
-#endif
-
-#ifdef CONFIG_LS_SPIIO0
-  struct spi_dev_s *spiio0 = ls_spiio_initialize(0);
-  if (spiio0 == NULL)
-    {
-      serr("ERROR: ls_spiio_initialize failed for SPIIO0\n");
-    }
-#endif
-
-#ifdef CONFIG_LS_SPIIO1
-  struct spi_dev_s *spiio1 = ls_spiio_initialize(1);
-  if (spiio1 == NULL)
-    {
-      serr("ERROR: ls_spiio_initialize failed for SPIIO1\n");
     }
 #endif
 
@@ -321,6 +300,46 @@ int ls_bringup(void)
   if (ret < 0)
     {
       serr("ERROR: ls_pwm_initialize failed for PWM3: %d\n", ret);
+    }
+#endif
+
+#ifdef CONFIG_LS_SPI0
+  struct spi_dev_s *spi0 = ls_spiflash_initialize(0);
+  if (spi0 == NULL)
+    {
+      serr("ERROR: ls_spiflash_initialize failed for SPI0\n");
+    }
+#endif
+
+#ifdef CONFIG_LS_SPI1
+  struct spi_dev_s *spi1 = ls_spiflash_initialize(1);
+  if (spi1 == NULL)
+    {
+      serr("ERROR: ls_spiflash_initialize failed for SPI1\n");
+    }
+#endif
+
+#ifdef CONFIG_LS_SPIIO0
+  struct spi_dev_s *spiio0 = ls_spiio_initialize(0);
+  if (spiio0 == NULL)
+    {
+      serr("ERROR: ls_spiio_initialize failed for SPIIO0\n");
+    }
+#endif
+
+#ifdef CONFIG_LS_SPIIO1
+  struct spi_dev_s *spiio1 = ls_spiio_initialize(1);
+  if (spiio1 == NULL)
+    {
+      serr("ERROR: ls_spiio_initialize failed for SPIIO1\n");
+    }
+#endif
+
+#ifdef CONFIG_LS_WDT
+  ret = ls_wdt_initialize();
+  if (ret < 0)
+    {
+      serr("ERROR: ls_wdt_initialize failed: %d\n", ret);
     }
 #endif
 
