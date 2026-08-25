@@ -2,6 +2,28 @@ comment "LS Configuration Options"
 
 menu "LS Peripheral Support"
 
+config LS_16550_UART
+	bool "16550 UART"
+	default y
+	select 16550_UART
+	select ARCH_HAVE_SERIAL_TERMIOS
+
+if LS_16550_UART
+
+config 16550_REGINCR
+	int
+	default 1
+
+config 16550_REGWIDTH
+	int
+	default 8
+
+config 16550_ADDRWIDTH
+	int
+	default 64
+
+endif # LS_16550_UART
+
 source "arch/loongarch/src/ls2k/Kconfig.have"
 
 source "arch/loongarch/src/ls2k/Kconfig.periph"
