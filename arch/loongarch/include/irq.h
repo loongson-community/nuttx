@@ -255,9 +255,15 @@
 
 #define XCPTCONTEXT_REGS    (INT_XCPT_REGS + FPU_XCPT_REGS)
 
+#ifdef CONFIG_ARCH_LAZYFPU
+/* Save only integer regs. FPU is handled separately */
+
+#define XCPTCONTEXT_SIZE    (INT_XCPT_SIZE)
+#else
 /* Save FPU registers with the integer registers */
 
 #define XCPTCONTEXT_SIZE    (INT_XCPT_SIZE + FPU_XCPT_SIZE)
+#endif
 
 /* In assembly language, values have to be referenced as byte address
  * offsets.  But in C, it is more convenient to reference registers as
@@ -485,6 +491,12 @@ struct xcptcontext
   /* Integer register save area */
 
   uintreg_t *regs;
+
+  /* FPU register save area */
+
+#if defined(CONFIG_ARCH_FPU) && defined(CONFIG_ARCH_LAZYFPU)
+  uintreg_t fregs[FPU_XCPT_REGS];
+#endif
 };
 
 #endif /* __ASSEMBLY__ */
