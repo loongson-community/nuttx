@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright 2024 Loongson Technology Corporation Limited
+#
+
+if ARCH_LOONGARCH
+
+choice
+	prompt "LoongArch Toolchain Selection"
+	default LOONGARCH_TOOLCHAIN_GNU
+
+config LOONGARCH_TOOLCHAIN_GNU
+	bool "Generic GNU toolchain"
+	select ARCH_TOOLCHAIN_GCC
+	---help---
+		This option should work for any modern GNU toolchain (GCC 5.2 or newer)
+		configured for loongarch64-unknown-elf.
+
+endchoice # LoongArch Toolchain Selection
+
+config ARCH_LOONGARCH64
+	bool
+	default y if ARCH_LOONGARCH
+	select ARCH_HAVE_STACKCHECK
+
+
+endif
