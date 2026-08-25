@@ -33,6 +33,10 @@ config ARCH_CHIP_LS2K0300
 	select LS_HAVE_TIM1
 	select LS_HAVE_TIM2
 	select LS_HAVE_TIM6
+	select LS_HAVE_DMA1
+	select LS_HAVE_ADC1
+	select LS_HAVE_COMMON_FOC
+	select LS_HAVE_IP_TIMERS
 	---help---
 		Loongson LS2K0300 SoC, LoongArch 64-bit
 
