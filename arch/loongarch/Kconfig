@@ -18,10 +18,28 @@ config LOONGARCH_TOOLCHAIN_GNU
 
 endchoice # LoongArch Toolchain Selection
 
+choice
+	prompt "LoongArch Chip Selection"
+	default ARCH_CHIP_LS2K0300
+	depends on ARCH_LOONGARCH
+
+config ARCH_CHIP_LS2K0300
+	bool "LS2K0300"
+	select ARCH_HAVE_DPFPU
+	---help---
+		Loongson LS2K0300 SoC, LoongArch 64-bit
+
+endchoice
+
+config ARCH_CHIP
+	string
+	default "ls2k" if ARCH_CHIP_LS2K0300
+
 config ARCH_LOONGARCH64
 	bool
 	default y if ARCH_LOONGARCH
 	select ARCH_HAVE_STACKCHECK
 
+source "arch/loongarch/src/ls2k/Kconfig"
 
 endif

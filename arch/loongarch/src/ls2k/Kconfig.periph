@@ -1,0 +1,8 @@
+#
+# LS common peripheral selection options.
+#
+
+menu "LS Peripheral Support"
+
+
+endmenu # LS Peripheral Support
