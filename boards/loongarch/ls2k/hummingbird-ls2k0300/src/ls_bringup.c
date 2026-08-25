@@ -172,5 +172,37 @@ int ls_bringup(void)
     }
 #endif
 
+#ifdef CONFIG_LS_PWM0
+  ret = ls_pwm_initialize(0);
+  if (ret < 0)
+    {
+      serr("ERROR: ls_pwm_initialize failed for PWM0: %d\n", ret);
+    }
+#endif
+
+#ifdef CONFIG_LS_PWM1
+  ret = ls_pwm_initialize(1);
+  if (ret < 0)
+    {
+      serr("ERROR: ls_pwm_initialize failed for PWM1: %d\n", ret);
+    }
+#endif
+
+#ifdef CONFIG_LS_PWM2
+  ret = ls_pwm_initialize(2);
+  if (ret < 0)
+    {
+      serr("ERROR: ls_pwm_initialize failed for PWM2: %d\n", ret);
+    }
+#endif
+
+#ifdef CONFIG_LS_PWM3
+  ret = ls_pwm_initialize(3);
+  if (ret < 0)
+    {
+      serr("ERROR: ls_pwm_initialize failed for PWM3: %d\n", ret);
+    }
+#endif
+
   return ret;
 }

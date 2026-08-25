@@ -92,6 +92,10 @@ extern void ls_gpioinit(void);
 extern struct i2c_master_s *ls_i2cbus_initialize(int port);
 #endif
 
+#ifdef CONFIG_LS_PWM
+extern int ls_pwm_initialize(int port);
+#endif
+
 #ifdef CONFIG_LS_SPI
 extern struct spi_dev_s *ls_spiflash_initialize(int port);
 #endif
