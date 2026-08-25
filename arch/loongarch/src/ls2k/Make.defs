@@ -38,16 +38,16 @@ ifeq ($(CONFIG_LS_DMA),y)
 CHIP_CSRCS += ls_dma.c
 endif
 
-ifeq ($(CONFIG_LS_GPIO),y)
-CHIP_CSRCS += ls_gpio.c
-endif
-
 ifeq ($(CONFIG_LS_RTC),y)
 CHIP_CSRCS += ls_rtc.c
 endif
 
 ifeq ($(CONFIG_LS_I2C),y)
 CHIP_CSRCS += ls_i2c.c
+endif
+
+ifeq ($(CONFIG_LS_THERMAL),y)
+CHIP_CSRCS += ls_thermal.c
 endif
 
 ifeq ($(CONFIG_LS_TIM),y)
@@ -97,6 +97,10 @@ endif
 
 ifeq ($(CONFIG_LS_WDT),y)
 CHIP_CSRCS += ls_wdt.c
+endif
+
+ifeq ($(CONFIG_LS_GPIO),y)
+CHIP_CSRCS += ls_gpio.c
 endif
 
 ifeq ($(CONFIG_TIMER),y)
