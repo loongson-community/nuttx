@@ -3789,6 +3789,13 @@ config ARCH_BOARD_FRDM_MCXN236
 		This options selects support for NuttX on the NXP MCXN236 CPU EVK
 		board with ARM Cortex-M33.
 
+config ARCH_BOARD_HUMMINGBIRD_LS2K0300
+	bool "Hummingbird board for LS2K0300"
+	depends on ARCH_CHIP_LS2K0300
+	select ARCH_HAVE_LEDS
+	---help---
+		Hummingbird evaluation board for Loongson LS2K0300 SoC.
+
 config ARCH_BOARD_CUSTOM
 	bool "Custom development board"
 	---help---
@@ -4258,6 +4265,7 @@ config ARCH_BOARD
 	default "csk6011a-nano"                if ARCH_BOARD_CSK6011A_NANO
 	default "frdm-mcxn236"                 if ARCH_BOARD_FRDM_MCXN236
 	default "devebox-stm32h743"            if ARCH_BOARD_DEVEBOX_STM32H743
+	default "hummingbird-ls2k0300"         if ARCH_BOARD_HUMMINGBIRD_LS2K0300
 
 comment "Common Board Options"
 
@@ -5450,6 +5458,9 @@ source "boards/arm/at32/at32f437-mini/Kconfig"
 endif
 if ARCH_BOARD_ESK32
 source "boards/arm/ht32f491x3/esk32/Kconfig"
+endif
+if ARCH_BOARD_HUMMINGBIRD_LS2K0300
+source "boards/loongarch/ls2k/hummingbird-ls2k0300/Kconfig"
 endif
 if ARCH_BOARD_CSK6011A_NANO
 source "boards/arm/csk6/csk6011a-nano/Kconfig"
