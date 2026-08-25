@@ -39,6 +39,10 @@
 #include "chip.h"
 #include "ls_lowputc.h"
 
+#ifdef CONFIG_LS_DMA
+#  include "ls_dma.h"
+#endif
+
 #ifdef CONFIG_LS_GPIO
 #  include "ls_gpio.h"
 #endif
