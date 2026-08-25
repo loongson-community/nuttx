@@ -53,6 +53,12 @@ config LS_RTC
 	---help---
 		Enable RTC driver support
 
+config LS_THERMAL
+	bool "Thermal"
+	default n
+	---help---
+		Enable thermal sensor driver support
+
 menu "Timer Configuration"
 	depends on LS_TIM
 source "arch/loongarch/src/ls2k/Kconfig.tim"

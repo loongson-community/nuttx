@@ -194,6 +194,14 @@ int ls_bringup(void)
     }
 #endif
 
+#ifdef CONFIG_LS_THERMAL
+  ret = ls_thermal_initialize();
+  if (ret < 0)
+    {
+      serr("ERROR: ls_thermal_initialize failed: %d\n", ret);
+    }
+#endif
+
 #ifdef CONFIG_LS_WDT
   ret = ls_wdt_initialize();
   if (ret < 0)
