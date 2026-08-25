@@ -51,6 +51,41 @@ config LS_RTC
 	---help---
 		Enable RTC driver support
 
+config LS_PWM
+	bool "PWM"
+	default n
+	select PWM
+	---help---
+		Enable PWM controller driver support
+
+if LS_PWM
+
+config LS_PWM0
+	bool "PWM0"
+	default n
+	---help---
+		Enable PWM0 controller
+
+config LS_PWM1
+	bool "PWM1"
+	default n
+	---help---
+		Enable PWM1 controller
+
+config LS_PWM2
+	bool "PWM2"
+	default n
+	---help---
+		Enable PWM2 controller
+
+config LS_PWM3
+	bool "PWM3"
+	default n
+	---help---
+		Enable PWM3 controller
+
+endif
+
 config LS_WDT
 	bool "Watchdog"
 	default n
