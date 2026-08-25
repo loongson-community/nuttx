@@ -26,13 +26,11 @@ ifeq ($(CONFIG_ARCH_CHIP_LS2K0300),y)
 
 CHIP_CSRCS  = ls_start.c ls_lowputc.c ls_irq.c
 CHIP_CSRCS += ls_allocateheap.c ls_clockconfig.c
-ifeq ($(CONFIG_LS_RTC),y)
-CHIP_CSRCS += ls_rtc.c
+ifeq ($(CONFIG_16550_UART),y)
+CHIP_CSRCS += ls_16550serial.c
 endif
 
-ifeq ($(CONFIG_LS_WDT),y)
-CHIP_CSRCS += ls_wdt.c
-endif
+
 
 ifeq ($(CONFIG_LS_GPIO),y)
 CHIP_CSRCS += ls_gpio.c
