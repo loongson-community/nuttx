@@ -56,6 +56,10 @@ ifeq ($(CONFIG_LS_SPIIO),y)
 CHIP_CSRCS += ls_spiio.c
 endif
 
+ifeq ($(CONFIG_LS_WDT),y)
+CHIP_CSRCS += ls_wdt.c
+endif
+
 ifeq ($(CONFIG_TIMER),y)
 CHIP_CSRCS += ls_timerisr.c
 endif

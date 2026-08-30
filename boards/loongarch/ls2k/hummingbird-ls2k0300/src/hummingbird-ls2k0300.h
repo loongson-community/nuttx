@@ -104,5 +104,9 @@ extern struct spi_dev_s *ls_spiflash_initialize(int port);
 extern struct spi_dev_s *ls_spiio_initialize(int port);
 #endif
 
+#ifdef CONFIG_LS_WDT
+extern int ls_wdt_initialize(void);
+#endif
+
 #endif /* __ASSEMBLY__ */
 #endif /* __BOARDS_LOONGARCH_LS2K_HUMMINGBIRD_LS2K0300_SRC_HUMMINGBIRD_LS2K0300_H */
