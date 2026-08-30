@@ -41,6 +41,11 @@ source "arch/loongarch/src/ls2k/Kconfig.have"
 
 source "arch/loongarch/src/ls2k/Kconfig.periph"
 
+menu "I2C Configuration"
+	depends on LS_I2C
+source "arch/loongarch/src/ls2k/Kconfig.i2c"
+endmenu # I2C Configuration
+
 config LS_RTC
 	bool "RTC"
 	default n
