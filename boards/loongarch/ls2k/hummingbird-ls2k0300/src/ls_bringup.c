@@ -133,5 +133,21 @@ int ls_bringup(void)
     }
 #endif
 
+#ifdef CONFIG_LS_SPIIO0
+  struct spi_dev_s *spiio0 = ls_spiio_initialize(0);
+  if (spiio0 == NULL)
+    {
+      serr("ERROR: ls_spiio_initialize failed for SPIIO0\n");
+    }
+#endif
+
+#ifdef CONFIG_LS_SPIIO1
+  struct spi_dev_s *spiio1 = ls_spiio_initialize(1);
+  if (spiio1 == NULL)
+    {
+      serr("ERROR: ls_spiio_initialize failed for SPIIO1\n");
+    }
+#endif
+
   return ret;
 }
