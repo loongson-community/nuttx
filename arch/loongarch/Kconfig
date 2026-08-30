@@ -26,6 +26,10 @@ choice
 config ARCH_CHIP_LS2K0300
 	bool "LS2K0300"
 	select ARCH_HAVE_DPFPU
+	select LS_HAVE_I2C0
+	select LS_HAVE_I2C1
+	select LS_HAVE_I2C2
+	select LS_HAVE_I2C3
 	---help---
 		Loongson LS2K0300 SoC, LoongArch 64-bit
 
