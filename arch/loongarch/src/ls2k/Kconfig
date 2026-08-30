@@ -73,6 +73,29 @@ config LS_PWM3
 
 endif
 
+config LS_SPI
+	bool "SPI Flash Controller"
+	default n
+	select SPI
+	---help---
+		Enable SPI flash controller driver support
+
+if LS_SPI
+
+config LS_SPI0
+	bool "SPI0"
+	default n
+	---help---
+		Enable SPI0 controller
+
+config LS_SPI1
+	bool "SPI1"
+	default n
+	---help---
+		Enable SPI1 controller
+
+endif
+
 config LS_WDT
 	bool "Watchdog"
 	default n
