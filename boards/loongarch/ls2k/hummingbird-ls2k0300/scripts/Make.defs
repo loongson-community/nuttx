@@ -24,7 +24,11 @@ include $(TOPDIR)/.config
 include $(TOPDIR)/tools/Config.mk
 include $(TOPDIR)/arch/loongarch/src/common/Toolchain.defs
 
-LDSCRIPT = ld.script
+ifeq ($(CONFIG_LS2K_UBOOT_BOOT),y)
+  LDSCRIPT = ld.script.uboot
+else
+  LDSCRIPT = ld.script
+endif
 ARCHSCRIPT += $(BOARD_DIR)$(DELIM)scripts$(DELIM)$(LDSCRIPT)
 
 CFLAGS = $(ARCHCFLAGS) $(ARCHOPTIMIZATION) $(ARCHCPUFLAGS) $(ARCHINCLUDES) $(ARCHDEFINES) $(EXTRAFLAGS)

@@ -51,6 +51,10 @@
 
 #endif
 
+#define LS_DDR_BASE                 0x00000000
+#define LS_DDR_SIZE                 0x10000000
+#define LS_DDR_END                  (LS_DDR_BASE + LS_DDR_SIZE)
+
 #define LS_SPIFLASH_BASE            0x1C000000
 #define LS_SPIFLASH_SIZE            0x00100000
 

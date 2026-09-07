@@ -40,9 +40,17 @@
  * Additional constants not in ls_memorymap.h
  ****************************************************************************/
 
-#define BOOT_SPACE_BASE         0x1c000000
-
-#define LS_IDLESTACK_TOP   (CACHED_MEMORY_ADDR | LS_L2CACHE_BASE | LS_L2CACHE_SIZE)
+#ifdef CONFIG_LS2K_UBOOT_BOOT
+/* Boot from u-boot (DDR): u-boot has already initialized the DDR controller,
+ * the system clocks and the DMW windows.  The image is loaded and run from
+ * PHYS_TO_CACHED(LS_DDR_BASE + 0x03000000) == 0x9000000003000000.
+ */
+#  define BOOT_SPACE_BASE       (LS_DDR_BASE + 0x03000000)   /* 0x03000000 */
+#  define LS_IDLESTACK_TOP      (CACHED_MEMORY_ADDR | LS_DDR_END)
+#else
+#  define BOOT_SPACE_BASE       0x1c000000
+#  define LS_IDLESTACK_TOP      (CACHED_MEMORY_ADDR | LS_L2CACHE_BASE | LS_L2CACHE_SIZE)
+#endif
 
 #define EARLY_UART_BASE         (UNCACHED_MEMORY_ADDR | 0x16100000)
 #define EARLY_UART_THR          (EARLY_UART_BASE + 0x00)
@@ -84,6 +92,49 @@
 
 __start:
 
+#ifdef CONFIG_LS2K_UBOOT_BOOT
+
+  /* =================================================================
+   * Boot from u-boot (running in DDR at PHYS_TO_CACHED(BOOT_SPACE_BASE)).
+   * u-boot has already initialized the DDR controller, the system clocks
+   * and the DMW windows.  We therefore skip:
+   *   - DMW0/DMW1 configuration
+   *   - ls_lowlevel_init() / ls_clk_init() (clock / PLL setup)
+   *   - ls_lock_scache() (L2 cache lock as RAM)
+   * Only the CPU state that NuttX depends on is established below.
+   * ================================================================= */
+
+  /* CSR EBASE: exception entry = vector placed in DDR by the linker */
+  la        $t0, exception_vector
+  csrwr     $t0, LOONGARCH_CSR_EBASE
+
+  /* CSR TLBREBASE: TLB exception entry in DDR */
+  la        $t0, tlb_exception_vector
+  csrwr     $t0, LOONGARCH_CSR_TLBREBASE
+
+  /* CSR ECFG VS 清零：所有例外和中断的入口地址是同一个 */
+  li.d      $t0, (0x7 << 16)
+  csrxchg   $zero, $t0, LOONGARCH_CSR_ECFG
+
+  /* CRMD.IE 当前全局中断使能，高有效；disable interrupt */
+  li.d      $t0, (1 << 2)
+  csrxchg   $zero, $t0, LOONGARCH_CSR_CRMD
+
+  /* DATF = 0b01 一致可缓存类型, DATM = 0b01 一致可缓存类型
+   * PG = 1, DA = 0 使能映射地址翻译模式（幂等，与 u-boot 退出状态一致）
+   */
+  li.w      $t0, 0xb0
+  csrwr     $t0, LOONGARCH_CSR_CRMD
+
+  /* set idle stack to top of DDR */
+  li.d      $sp, LS_IDLESTACK_TOP
+
+  /* Jump to __ls_start */
+  bl        __ls_start
+  nop
+
+#else
+
   /* CPUCFG 0x0 PRID 处理器标识 */
   li.d      $t0, (1 << (24 + 32))
   csrxchg   $t0, $t0, LOONGARCH_CSR_PRID
@@ -124,21 +175,21 @@ __start:
   li.d      $t0, CACHED_MEMORY_ADDR | 0x1f
   csrwr     $t0, LOONGARCH_CSR_DMWIN1
 
-	/* CSR ECFG VS 清零，所有例外和中断的入口地址是同一个。
-	 * clear Vint cofigure
-	 */
+  /* CSR ECFG VS 清零，所有例外和中断的入口地址是同一个。
+   * clear Vint cofigure
+   */
   li.d      $t0, (0x7 << 16)
   csrxchg   $zero, $t0, LOONGARCH_CSR_ECFG
 
-	/* CSR EENTRY 异常入口 = 0x9000 0000 1c00 1000
-	 * set ebase address
-	 */
+  /* CSR EENTRY 异常入口 = 0x9000 0000 1c00 1000
+   * set ebase address
+   */
   li.d      $t0, PHYS_TO_CACHED(BOOT_SPACE_BASE + 0x1000)
   csrwr     $t0, LOONGARCH_CSR_EBASE
 
-	/* CSR TLBRENTRY 异常入口 = 0x1c00 2000
-	 * set TLB excption address
-	 */
+  /* CSR TLBRENTRY 异常入口 = 0x1c00 2000
+   * set TLB excption address
+   */
   li.d      $t0, BOOT_SPACE_BASE + 0x2000
   csrwr     $t0, LOONGARCH_CSR_TLBREBASE
 
@@ -189,6 +240,8 @@ __start:
   /* Jump to __ls_start */
   bl        __ls_start
   nop
+
+#endif
 
   .size __start, . - __start
 

@@ -1,5 +1,18 @@
 comment "LS Configuration Options"
 
+config LS2K_UBOOT_BOOT
+	bool "Boot from u-boot (DDR)"
+	default n
+	---help---
+		Boot from u-boot.  When enabled, u-boot is assumed to have already
+		initialized the DDR controller, the system clocks and the direct map
+		windows (DMW0/DMW1).  The NuttX entry code (ls_head.S) then skips DMW
+		configuration, the low-level / PLL clock initialization and the L2
+		cache locking.  The kernel image is linked and loaded at
+		0x9000000003000000 (the ORIGIN defined in scripts/ld.script.uboot),
+		and the idle stack / heap live in the DDR region described by
+		CONFIG_RAM_START / CONFIG_RAM_SIZE.
+
 menu "LS Peripheral Support"
 
 config LS_16550_UART

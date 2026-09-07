@@ -62,8 +62,14 @@
  * Public Data
  ****************************************************************************/
 
+#ifdef CONFIG_LS2K_UBOOT_BOOT
+/* Boot from u-boot: idle stack is at the top of DDR. */
+uintptr_t g_idle_topstack =
+    PHYS_TO_CACHED(LS_DDR_END);
+#else
 uintptr_t g_idle_topstack =
     PHYS_TO_CACHED(LS_L2CACHE_BASE + LS_L2CACHE_SIZE);
+#endif
 
 /****************************************************************************
  * Public Functions
