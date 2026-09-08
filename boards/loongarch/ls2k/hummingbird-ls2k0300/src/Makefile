@@ -26,6 +26,9 @@ CSRCS  = ls_bringup.c ls_boot.c
 
 ifeq ($(CONFIG_BOARDCTL),y)
 CSRCS += ls_appinit.c
+ifeq ($(CONFIG_BOARDCTL_RESET),y)
+CSRCS += ls_reset.c
+endif
 endif
 
 ifeq ($(CONFIG_ARCH_LEDS),y)

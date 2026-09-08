@@ -24,6 +24,9 @@ set(SRCS ls_bringup.c ls_boot.c)
 
 if(CONFIG_BOARDCTL)
   list(APPEND SRCS ls_appinit.c)
+  if(CONFIG_BOARDCTL_RESET)
+    list(APPEND SRCS ls_reset.c)
+  endif()
 endif()
 
 if(CONFIG_ARCH_LEDS)

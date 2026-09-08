@@ -24,6 +24,8 @@ set(SRCS ls_head.S ls_start.c ls_irq.c)
 
 list(APPEND SRCS ls_allocateheap.c ls_clockconfig.c)
 
+list(APPEND SRCS ls_systemreset.c)
+
 list(APPEND SRCS ls_lowputc.c)
 
 if(CONFIG_16550_UART)

@@ -23,11 +23,14 @@
 #ifndef __ARCH_LOONGARCH_SRC_LS2K_HARDWARE_LS_WDT_H
 #define __ARCH_LOONGARCH_SRC_LS2K_HARDWARE_LS_WDT_H
 
+/* WD_EN register (offset 0x00) */
+
 #define LS_WDT_RST_CTR        0x00
 #define LS_WDT_CR             0x04
 #define LS_WDT_TIMER          0x08
 
-#define WDT_RST_CTR_ENABLE          (1 << 1)
+#define WDT_RST_CTR_ENABLE          (1 << 1)  /* Watchdog enable */
+#define WDT_RST_CTR_OS_RST          (1 << 0)  /* System soft reset */
 #define WDT_CR_RESET                0x01
 
 #endif /* __ARCH_LOONGARCH_SRC_LS2K_HARDWARE_LS_WDT_H */

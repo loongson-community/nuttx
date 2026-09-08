@@ -26,6 +26,7 @@ choice
 config ARCH_CHIP_LS2K0300
 	bool "LS2K0300"
 	select ARCH_HAVE_DPFPU
+	select ARCH_HAVE_RESET
 	select LS_HAVE_I2C0
 	select LS_HAVE_I2C1
 	select LS_HAVE_I2C2
