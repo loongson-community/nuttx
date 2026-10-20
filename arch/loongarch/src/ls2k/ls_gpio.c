@@ -111,13 +111,16 @@ int ls_configgpio(uint32_t cfgset)
 
   /* Set direction */
 
+  /* LS_GPIO_DIR_OFFSET is really OEN (output enable):
+   * 1 = output enabled, 0 = input. Matches Loongson pinctrl-utils.h GPIO_OEN.
+   */
   if (cfgset & GPIO_IO_INPUT)
     {
-      gpio_set_reg(g_gpio_base, LS_GPIO_DIR_OFFSET, pin, 1);
+      gpio_set_reg(g_gpio_base, LS_GPIO_DIR_OFFSET, pin, 0);
     }
   else
     {
-      gpio_set_reg(g_gpio_base, LS_GPIO_DIR_OFFSET, pin, 0);
+      gpio_set_reg(g_gpio_base, LS_GPIO_DIR_OFFSET, pin, 1);
     }
 
   return OK;
