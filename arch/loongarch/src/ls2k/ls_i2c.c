@@ -78,6 +78,7 @@
 #include "loongarch_internal.h"
 #include "ls_gpio.h"
 #include "ls_i2c.h"
+#include "ls_i2c_hw.h"
 
 /* At least one I2C peripheral must be enabled */
 
@@ -1343,6 +1344,19 @@ static int ls_i2c_init(struct ls_i2c_priv_s *priv)
    * or 4 MHz for 400 kHz.  This also disables all I2C interrupts.
    */
 
+#ifdef CONFIG_I2C_POLLED
+
+  /* The polled hw layer hardcodes pclk to 10 MHz (LS_APB_FREQUENCY is
+   * wrong on this chip, which breaks the FSM-based init below).
+   */
+
+  {
+    struct ls_i2c_hw_port_s port;
+
+    ls_i2c_hw_bind(&port, priv->config->base);
+    ls_i2c_hw_init(&port);
+  }
+#else
   ls_i2c_putreg(priv, LS_I2C_CR2_OFFSET,
                (LS_APB_FREQUENCY / 1000000));
 
@@ -1355,6 +1369,7 @@ static int ls_i2c_init(struct ls_i2c_priv_s *priv)
   /* Enable I2C */
 
   ls_i2c_putreg(priv, LS_I2C_CR1_OFFSET, I2C_CR1_PE);
+#endif
   return OK;
 }
 
@@ -1418,6 +1433,34 @@ static int ls_i2c_transfer(struct i2c_master_s *dev,
     {
       return ret;
     }
+
+#ifdef CONFIG_I2C_POLLED
+
+  /* Polled transfer path: bypass the interrupt FSM entirely, one
+   * ls_i2c_hw_xfer() call per message (START .. STOP each).
+   */
+
+  {
+    struct ls_i2c_hw_port_s port;
+    int i;
+
+    ls_i2c_hw_bind(&port, priv->config->base);
+
+    for (i = 0; i < count; i++)
+      {
+        ret = ls_i2c_hw_xfer(&port, msgs[i].addr,
+                             (msgs[i].flags & I2C_M_READ) != 0,
+                             msgs[i].buffer, (uint16_t)msgs[i].length);
+        if (ret < 0)
+          {
+            break;
+          }
+      }
+
+    nxmutex_unlock(&priv->lock);
+    return ret;
+  }
+#else
 
 #ifdef I2C1_FSMC_CONFLICT
   /* Disable FSMC that shares a pin with I2C1 (LBAR) */
@@ -1593,6 +1636,7 @@ static int ls_i2c_transfer(struct i2c_master_s *dev,
 
   nxmutex_unlock(&priv->lock);
   return ret;
+#endif
 }
 
 /****************************************************************************
