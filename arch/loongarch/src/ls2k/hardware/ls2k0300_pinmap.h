@@ -254,25 +254,25 @@
 
 /* I2C */
 
-#define GPIO_I2C0_SCL_1            (GPIO_ALT_M | GPIO_PIN(48))
-#define GPIO_I2C0_SCL_2            (GPIO_ALT_1 | GPIO_PIN(60))
-#define GPIO_I2C0_SDA_1            (GPIO_ALT_M | GPIO_PIN(49))
-#define GPIO_I2C0_SDA_2            (GPIO_ALT_1 | GPIO_PIN(61))
+#define GPIO_I2C0_SCL_1            (GPIO_ALT_M | GPIO_IO_INPUT | GPIO_PIN(48))
+#define GPIO_I2C0_SCL_2            (GPIO_ALT_1 | GPIO_IO_INPUT | GPIO_PIN(60))
+#define GPIO_I2C0_SDA_1            (GPIO_ALT_M | GPIO_IO_INPUT | GPIO_PIN(49))
+#define GPIO_I2C0_SDA_2            (GPIO_ALT_1 | GPIO_IO_INPUT | GPIO_PIN(61))
 
-#define GPIO_I2C1_SCL_1            (GPIO_ALT_M | GPIO_PIN(50))
-#define GPIO_I2C1_SCL_2            (GPIO_ALT_1 | GPIO_PIN(62))
-#define GPIO_I2C1_SDA_1            (GPIO_ALT_M | GPIO_PIN(51))
-#define GPIO_I2C1_SDA_2            (GPIO_ALT_1 | GPIO_PIN(63))
+#define GPIO_I2C1_SCL_1            (GPIO_ALT_M | GPIO_IO_INPUT | GPIO_PIN(50))
+#define GPIO_I2C1_SCL_2            (GPIO_ALT_1 | GPIO_IO_INPUT | GPIO_PIN(62))
+#define GPIO_I2C1_SDA_1            (GPIO_ALT_M | GPIO_IO_INPUT | GPIO_PIN(51))
+#define GPIO_I2C1_SDA_2            (GPIO_ALT_1 | GPIO_IO_INPUT | GPIO_PIN(63))
 
-#define GPIO_I2C2_SCL_1            (GPIO_ALT_M | GPIO_PIN(52))
-#define GPIO_I2C2_SCL_2            (GPIO_ALT_2 | GPIO_PIN(82))
-#define GPIO_I2C2_SDA_1            (GPIO_ALT_M | GPIO_PIN(53))
-#define GPIO_I2C2_SDA_2            (GPIO_ALT_2 | GPIO_PIN(83))
+#define GPIO_I2C2_SCL_1            (GPIO_ALT_M | GPIO_IO_INPUT | GPIO_PIN(52))
+#define GPIO_I2C2_SCL_2            (GPIO_ALT_2 | GPIO_IO_INPUT | GPIO_PIN(82))
+#define GPIO_I2C2_SDA_1            (GPIO_ALT_M | GPIO_IO_INPUT | GPIO_PIN(53))
+#define GPIO_I2C2_SDA_2            (GPIO_ALT_2 | GPIO_IO_INPUT | GPIO_PIN(83))
 
-#define GPIO_I2C3_SCL_1            (GPIO_ALT_M | GPIO_PIN(54))
-#define GPIO_I2C3_SCL_2            (GPIO_ALT_2 | GPIO_PIN(84))
-#define GPIO_I2C3_SDA_1            (GPIO_ALT_M | GPIO_PIN(55))
-#define GPIO_I2C3_SDA_2            (GPIO_ALT_2 | GPIO_PIN(85))
+#define GPIO_I2C3_SCL_1            (GPIO_ALT_M | GPIO_IO_INPUT | GPIO_PIN(54))
+#define GPIO_I2C3_SCL_2            (GPIO_ALT_2 | GPIO_IO_INPUT | GPIO_PIN(84))
+#define GPIO_I2C3_SDA_1            (GPIO_ALT_M | GPIO_IO_INPUT | GPIO_PIN(55))
+#define GPIO_I2C3_SDA_2            (GPIO_ALT_2 | GPIO_IO_INPUT | GPIO_PIN(85))
 
 /* SPI-FLASH */
 
