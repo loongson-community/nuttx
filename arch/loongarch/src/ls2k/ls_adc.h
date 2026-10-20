@@ -151,6 +151,8 @@
 #define ADC_IER_AWD                  ADC_CR1_AWDIE
 #define ADC_ISR_JEOC                 ADC_SR_JEOC
 #define ADC_IER_JEOC                 ADC_CR1_JEOCIE
+#define ADC_ISR_OVR                  0 /* No overrun status on LS2K ADC */
+#define ADC_IER_OVR                  0 /* No overrun interrupt on LS2K ADC */
 
 #define ADC_ISR_ALLINTS (ADC_ISR_EOC | ADC_ISR_AWD | ADC_ISR_JEOC)
 #define ADC_IER_ALLINTS (ADC_IER_EOC | ADC_IER_AWD | ADC_IER_JEOC)

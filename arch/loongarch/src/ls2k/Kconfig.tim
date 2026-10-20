@@ -199,12 +199,17 @@ config LS_PWM_LL_OPS
 	---help---
 		Enable low-level PWM ops.
 
+config LS_TIM_PWM
+	bool
+	default n
+
 config LS_TIM1_PWM
 	bool "TIM1 PWM"
 	depends on LS_TIM1
 	depends on LS_HAVE_TIM_PWM
 	depends on !LS_HAVE_IP_TIMERS || LS_TIM
 	select LS_PWM if LS_HAVE_TIM_PWM_LSPWM
+	select LS_TIM_PWM
 	---help---
 		Reserve timer 1 for use by PWM
 

@@ -55,6 +55,8 @@
 #define TIMTYPE_BASIC        0  /* Basic timers (no outputs) */
 #define TIMTYPE_GENERAL32    4  /* General 32-bit timers (up, down, up/down)*/
 #define TIMTYPE_ADVANCED     5  /* Advanced timers */
+#define TIMTYPE_COUNTUP16    1  /* 16-bit count-up timers (unused on LS2K) */
+#define TIMTYPE_COUNTUP16_N  2  /* 16-bit count-up timers w/ complementary (unused) */
 
 #define TIMTYPE_TIM1       TIMTYPE_ADVANCED
 #define TIMTYPE_TIM2       TIMTYPE_GENERAL32
