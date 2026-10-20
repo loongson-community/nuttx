@@ -1263,6 +1263,13 @@ static int ls_i2c_isr_process(struct ls_i2c_priv_s *priv)
 
       ls_i2c_putreg(priv, LS_I2C_SR1_OFFSET, 0);
 
+      /* Issue STOP so the peripheral releases the bus.  Without this the
+       * LS2K I2C peripheral keeps SCL held low after a NAK, waiting for a
+       * software decision, and the whole bus stays wedged forever.
+       */
+
+      ls_i2c_sendstop(priv);
+
       /* Is there a thread waiting for this event (there should be) */
 
 #ifndef CONFIG_I2C_POLLED
