@@ -3806,6 +3806,14 @@ config ARCH_BOARD_HUMMINGBIRD_LS2K0300
 	---help---
 		Hummingbird evaluation board for Loongson LS2K0300 SoC.
 
+config ARCH_BOARD_99PAI_LS2K0300
+	bool "99PAI board for LS2K0300"
+	depends on ARCH_CHIP_LS2K0300
+	select ARCH_HAVE_LEDS
+	---help---
+		99PAI (99派) board for Loongson LS2K0300 SoC, by CTCI (Shenzhen).
+		Boots via PMON (UART clock 100MHz).
+
 config ARCH_BOARD_CUSTOM
 	bool "Custom development board"
 	---help---
@@ -4277,6 +4285,7 @@ config ARCH_BOARD
 	default "frdm-mcxn236"                 if ARCH_BOARD_FRDM_MCXN236
 	default "devebox-stm32h743"            if ARCH_BOARD_DEVEBOX_STM32H743
 	default "hummingbird-ls2k0300"         if ARCH_BOARD_HUMMINGBIRD_LS2K0300
+	default "99pai-ls2k0300"               if ARCH_BOARD_99PAI_LS2K0300
 
 comment "Common Board Options"
 
@@ -5475,6 +5484,10 @@ source "boards/arm/ht32f491x3/esk32/Kconfig"
 endif
 if ARCH_BOARD_HUMMINGBIRD_LS2K0300
 source "boards/loongarch/ls2k/hummingbird-ls2k0300/Kconfig"
+endif
+
+if ARCH_BOARD_99PAI_LS2K0300
+source "boards/loongarch/ls2k/99pai-ls2k0300/Kconfig"
 endif
 if ARCH_BOARD_CSK6011A_NANO
 source "boards/arm/csk6/csk6011a-nano/Kconfig"

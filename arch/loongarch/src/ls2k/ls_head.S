@@ -40,6 +40,13 @@
  * Additional constants not in ls_memorymap.h
  ****************************************************************************/
 
+/* Early UART baud divisor.  108 for 200MHz UART clock (e.g. U-Boot on
+ * Hummingbird), 54 for 100MHz (e.g. PMON on 99PAI).
+ */
+#ifndef CONFIG_LS_EARLY_UART_DIVISOR
+#  define CONFIG_LS_EARLY_UART_DIVISOR  108
+#endif
+
 #ifdef CONFIG_LS2K_UBOOT_BOOT
 /* Boot from u-boot (DDR): u-boot has already initialized the DDR controller,
  * the system clocks and the DMW windows.  The image is loaded and run from
@@ -61,7 +68,7 @@
   li.d      $t2, EARLY_UART_BASE
   li.w      $t3, 0x80
   st.b      $t3, $t2, 3
-  li.w      $t3, 108
+  li.w      $t3, CONFIG_LS_EARLY_UART_DIVISOR
   st.b      $t3, $t2, 0
   li.w      $t3, 0
   st.b      $t3, $t2, 1
